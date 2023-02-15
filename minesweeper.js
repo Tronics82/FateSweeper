@@ -1,8 +1,20 @@
 // starts the game, calls create board and call time
-function start() {}
+function start() {
+    constructBoard();
+}
 
 // creates the board
-function constructBoard() {}
+function constructBoard() {
+    document.getElementById("titleScreen").style.display = "none";
+    const board = document.getElementsByClassName("board")[0];
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            const grid = `<span class="cell"></span>`;
+            board.innerHTML += grid;
+        }
+        //board.innerHTML += `<br />`;
+    }
+}
 
 // place mines, happens after first reveal
 function placeMines() {}

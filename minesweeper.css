@@ -34,7 +34,7 @@ button:hover {
     justify-content: center;
     align-items: center;
     flex-flow: row wrap;
-    flex: 0 0 0px;
+    flex: 0 0 0; /*100vh*/
     width: 320px;
     /*background-color: beige;*/
 }

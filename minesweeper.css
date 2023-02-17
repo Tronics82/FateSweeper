@@ -46,3 +46,15 @@ button:hover {
     flex: 0 0 10px;
     background-color: rgb(197, 197, 194);
 }
+
+.mine {
+    background-color: red;
+}
+
+.cell:hover {
+    background-color: #eee;
+}
+
+.cell-clicked {
+    background-color: white;
+}

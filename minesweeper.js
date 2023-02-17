@@ -1,4 +1,5 @@
 let cellsData = [];
+let firstClick = true;
 
 // starts the game, calls create board and call time
 function start() {
@@ -12,7 +13,9 @@ function constructBoard() {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const id = i.toString() + j.toString();
-      const grid = `<span onclick="clickTile(${id})" id="cell-${id}" class="cell"></span>`;
+      const grid = `<span onclick="clickTile(${Number(
+        id
+      )})" id="cell-${id}" class="cell"></span>`;
       board.innerHTML += grid;
       cellsData.push({
         id: i.toString() + j.toString(),
@@ -21,11 +24,25 @@ function constructBoard() {
       });
     }
   }
-  console.log(cellsData);
 }
 
 // place mines, happens after first reveal
-function placeMines() {}
+function placeMines() {
+  let minesLeft = 20;
+  while (minesLeft > 0) {
+    const rand = Math.floor(Math.random() * 100);
+    let stringID = rand;
+    // to account for digits less than 10 as they have 0 in their ID
+    if (rand < 10) {
+      stringID = "0" + rand;
+    }
+    if (!cellsData[rand].revealed && !cellsData[rand].hasMine) {
+      cellsData[rand].hasMine = true;
+      document.getElementById(`cell-${stringID}`).classList.add("mine");
+      minesLeft--;
+    }
+  }
+}
 
 // chooses game difficulity
 function selectMode() {}
@@ -46,7 +63,19 @@ function clickTile(id) {
   // then mark the cell programmatically as hasBeenClicked
   // if it's first clicked tile, place mines
   // check adjacent and place numbers
-  console.log(id);
+  if (cellsData[id].hasMine) {
+    gameOver();
+    return;
+  }
+  const cell = document.getElementById(`cell-${id}`);
+  cell.classList.add("cell-clicked");
+  cellsData[id].revealed = true;
+  if (firstClick) {
+    placeMines();
+    firstClick = false;
+  }
+  //console.log(cellsData);
+  //console.log(cell);
 }
 
 // reveals adjacent tiles and numbers depending on user click

@@ -58,3 +58,8 @@ button:hover {
 .cell-clicked {
     background-color: white;
 }
+
+.flagged {
+    background-image: url(./assets/images/minesweeper-flag-icon-v1-002-3d-model-low-poly-max-obj-3ds-fbx-ma-stl.jpg);
+    object-fit: cover;
+}

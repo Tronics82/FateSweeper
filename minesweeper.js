@@ -16,7 +16,7 @@ function constructBoard() {
       const id = i.toString() + j.toString();
       const grid = `
         <span
-          onmousedown="clickTile(event, ${Number(id)})" 
+          onmouseup="clickTile(event, ${Number(id)})" 
           id="cell-${id}" 
           oncontextmenu="return false;"
           class="cell">
@@ -65,6 +65,10 @@ function gameOver() {
   const board = document.getElementsByClassName("board")[0];
   board.innerHTML = "";
   alert("Game is over, now what?");
+  document.getElementById("titleScreen").style.display = "flex";
+  cellsData = [];
+  isFirstClick = true;
+  isGameOver = false;
 }
 
 // reveals the tile that the user clicked

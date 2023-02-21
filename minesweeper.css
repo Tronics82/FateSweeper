@@ -35,15 +35,18 @@ button:hover {
     align-items: center;
     flex-flow: row wrap;
     flex: 0 0 0; /*100vh*/
-    width: 320px;
-    /*background-color: beige;*/
+    width: 500px;
+    background-color: beige;
 }
 
 .cell {
-    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 0%;
     border: 1px solid black;
-    flex: 0 0 10px;
+    height: 50px;
+    flex: 0 0 50px;
     background-color: rgb(197, 197, 194);
 }
 
@@ -53,6 +56,12 @@ button:hover {
 
 .cell-clicked {
     background-color: white;
+}
+
+.numbered {
+    font: 16px Arial, sans-serif;
+    background-image: url();
+    object-fit: contain;
 }
 
 .mine {

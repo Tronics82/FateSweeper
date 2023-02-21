@@ -16,9 +16,9 @@ function constructBoard() {
       const id = i.toString() + j.toString();
       const grid = `
         <span
-          onmouseup="clickTile(event, ${Number(id)})" 
+          onclick="clickTile(event, ${Number(id)})" 
           id="cell-${id}" 
-          oncontextmenu="return false;"
+          oncontextmenu="event.preventDefault(); clickTile(event, ${Number(id)});"
           class="cell">
         </span>
       `;
@@ -27,6 +27,7 @@ function constructBoard() {
         id: i.toString() + j.toString(),
         revealed: false,
         hasMine: false,
+        hasNumber: false,
         hasFlag: false,
       });
     }
@@ -58,17 +59,19 @@ function selectMode() {}
 function pause() {}
 
 // restart the game if game is over
-function restart() {}
+function restart() {
+  document.getElementById("titleScreen").style.display = "flex";
+  cellsData = [];
+  isFirstClick = true;
+  isGameOver = false;
+}
 
 // checks if user wins or loses
 function gameOver() {
   const board = document.getElementsByClassName("board")[0];
   board.innerHTML = "";
   alert("Game is over, now what?");
-  document.getElementById("titleScreen").style.display = "flex";
-  cellsData = [];
-  isFirstClick = true;
-  isGameOver = false;
+  restart();
 }
 
 // reveals the tile that the user clicked
@@ -88,8 +91,9 @@ function clickTile(mouseEvent, id) {
     cell.classList.add("cell-clicked");
     cellsData[id].revealed = true;
     if (isFirstClick) {
-      placeMines();
       isFirstClick = false;
+      placeMines();
+      checkAdjacent();
     }
   } else if (mouseEvent.button === 2) {
     console.log(cellsData[id].hasFlag);
@@ -103,8 +107,39 @@ function clickTile(mouseEvent, id) {
   }
 }
 
+// to account for digits less than 10 as they have 0 in their ID
+function prependZero(number) {
+  if (number < 10) {
+    return "0" + number;
+  } else
+      return number;
+}
+
 // reveals adjacent tiles and numbers depending on user click
-function checkAdjacent() {}
+function checkAdjacent() {
+  //needs to check the 9 cells around itself. display num 0-9 based on num of mines.
+  //cell id -1, +1, -11, -10, -9, +9, +10, +11
+  const arr = [-1, 1, -11, -10, -9, 9, 10, 11];
+  let x = 0;
+
+  for (let i = 0; i < 100; i++) {
+    x = 0;
+    if (!cellsData[i].hasMine) { 
+      for (let j in arr) {
+        if (i+arr[j] < 0 || i+arr[j] > 99) {
+          x += 0;
+        } else if (cellsData[i+arr[j]].hasMine) {
+           x++;
+        }
+      }
+      if (x > 0) {
+        document.getElementById(`cell-${prependZero(i)}`).innerHTML = x;
+        cellsData[i].hasNumber = true;
+        document.getElementById(`cell-${prependZero(i)}`).classList.add("numbered");
+      }
+    }
+  }
+}
 
 // helper function to check adjacent tiles
 function checkAdjacentHelper() {}

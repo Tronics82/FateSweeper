@@ -125,10 +125,10 @@ function checkAdjacent() {
   for (let i = 0; i < 100; i++) {
     x = 0;
     if (!cellsData[i].hasMine) { 
-      for (let j in arr) {
-        if (i+arr[j] < 0 || i+arr[j] > 99) {
+      for (let num in arr) {
+        if (i+arr[num] < 0 || i+arr[num] > 99) {
           x += 0;
-        } else if (cellsData[i+arr[j]].hasMine) {
+        } else if (cellsData[i+arr[num]].hasMine) {
            x++;
         }
       }

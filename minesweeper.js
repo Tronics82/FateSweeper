@@ -18,7 +18,9 @@ function constructBoard() {
         <span
           onclick="clickTile(event, ${Number(id)})" 
           id="cell-${id}" 
-          oncontextmenu="event.preventDefault(); clickTile(event, ${Number(id)});"
+          oncontextmenu="event.preventDefault(); clickTile(event, ${Number(
+            id
+          )});"
           class="cell">
         </span>
       `;
@@ -50,6 +52,7 @@ function placeMines() {
       minesLeft--;
     }
   }
+  placeNumbers();
 }
 
 // chooses game difficulity
@@ -90,20 +93,13 @@ function clickTile(mouseEvent, id) {
     }
     cell.classList.add("cell-clicked");
     cellsData[id].revealed = true;
+    checkAdjacent(id);
     if (isFirstClick) {
       isFirstClick = false;
       placeMines();
-      checkAdjacent();
     }
   } else if (mouseEvent.button === 2) {
-    console.log(cellsData[id].hasFlag);
-    if (cellsData[id].hasFlag) {
-      cellsData[id].hasFlag = false;
-      cell.classList.remove("flagged");
-    } else {
-      cellsData[id].hasFlag = true;
-      cell.classList.add("flagged");
-    }
+    shouldFlag(id);
   }
 }
 
@@ -111,12 +107,22 @@ function clickTile(mouseEvent, id) {
 function prependZero(number) {
   if (number < 10) {
     return "0" + number;
-  } else
-      return number;
+  } else return number;
 }
 
 // reveals adjacent tiles and numbers depending on user click
-function checkAdjacent() {
+function checkAdjacent(id) {
+  /*const cell = document.getElementById(`cell-${id}`);
+  const arr = [-1, 1, -11, -10, -9, 9, 10, 11];
+  for (num of arr)
+  if (id)*/
+}
+
+// helper function to checkAdjacent's adjacent tiles
+function checkAdjacentHelper(id) {}
+
+// marks the cleared tiles with numbers if there is adjacent mines
+function placeNumbers() {
   //needs to check the 9 cells around itself. display num 0-9 based on num of mines.
   //cell id -1, +1, -11, -10, -9, +9, +10, +11
   const arr = [-1, 1, -11, -10, -9, 9, 10, 11];
@@ -124,31 +130,36 @@ function checkAdjacent() {
 
   for (let i = 0; i < 100; i++) {
     x = 0;
-    if (!cellsData[i].hasMine) { 
+    if (!cellsData[i].hasMine) {
       for (let num in arr) {
-        if (i+arr[num] < 0 || i+arr[num] > 99) {
+        if (i + arr[num] < 0 || i + arr[num] > 99) {
           x += 0;
-        } else if (cellsData[i+arr[num]].hasMine) {
-           x++;
+        } else if (cellsData[i + arr[num]].hasMine) {
+          x++;
         }
       }
       if (x > 0) {
         document.getElementById(`cell-${prependZero(i)}`).innerHTML = x;
         cellsData[i].hasNumber = true;
-        document.getElementById(`cell-${prependZero(i)}`).classList.add("numbered");
+        document
+          .getElementById(`cell-${prependZero(i)}`)
+          .classList.add("numbered");
       }
     }
   }
 }
 
-// helper function to check adjacent tiles
-function checkAdjacentHelper() {}
-
-// marks the cleared tiles with numbers if there is adjacent mines
-function placeNumber() {}
-
 // place a flag on a tile
-function flag() {}
+function shouldFlag(id) {
+  const cell = document.getElementById(`cell-${id}`);
+  if (cellsData[id].hasFlag) {
+    cellsData[id].hasFlag = false;
+    cell.classList.remove("flagged");
+  } else {
+    cellsData[id].hasFlag = true;
+    cell.classList.add("flagged");
+  }
+}
 
 // starts timer
 function startTime() {}

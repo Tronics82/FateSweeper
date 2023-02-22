@@ -27,14 +27,27 @@ function constructBoard() {
       board.innerHTML += grid;
       cellsData.push({
         id: i.toString() + j.toString(),
+        isEdgeLeft: false,
+        isEdgeRight: false,
         revealed: false,
         hasMine: false,
         hasNumber: false,
         hasFlag: false,
       });
+      checkEdges(j, id);
     }
   }
 }
+
+function checkEdges(j, id) {
+      if (j === 0) {
+        cellsData[Number(id)].isEdgeLeft = true;
+        //document.getElementById(`cell-${id}`).classList.add("edge");
+      } else if (j === 9) {
+        cellsData[Number(id)].isEdgeRight = true;
+        //document.getElementById(`cell-${id}`).classList.add("edge");
+      }
+    }
 
 // place mines, happens after first reveal
 function placeMines() {
@@ -113,8 +126,8 @@ function prependZero(number) {
 // reveals adjacent tiles and numbers depending on user click
 function checkAdjacent(id) {
   /*const cell = document.getElementById(`cell-${id}`);
-  const arr = [-1, 1, -11, -10, -9, 9, 10, 11];
-  for (num of arr)
+  const adjacentPositionArr = [-1, 1, -11, -10, -9, 9, 10, 11];
+  for (num of adjacentPositionArr)
   if (id)*/
 }
 
@@ -125,25 +138,43 @@ function checkAdjacentHelper(id) {}
 function placeNumbers() {
   //needs to check the 9 cells around itself. display num 0-9 based on num of mines.
   //cell id -1, +1, -11, -10, -9, +9, +10, +11
-  const arr = [-1, 1, -11, -10, -9, 9, 10, 11];
+  const adjacentPositionArr = [-1, 1, -11, -10, -9, 9, 10, 11];
+  const adjacentPositionArrEdgeLeft = [1, -10, -9, 10, 11];
+  const adjacentPositionArrEdgeRight = [-1, -11, -10, 9, 10];
   let x = 0;
 
   for (let i = 0; i < 100; i++) {
     x = 0;
     if (!cellsData[i].hasMine) {
-      for (let num in arr) {
-        if (i + arr[num] < 0 || i + arr[num] > 99) {
-          x += 0;
-        } else if (cellsData[i + arr[num]].hasMine) {
-          x++;
+      if (cellsData[i].isEdgeLeft) {
+        for (let num in adjacentPositionArrEdgeLeft) {
+          if (i + adjacentPositionArrEdgeLeft[num] < 0 || i + adjacentPositionArrEdgeLeft[num] > 99) {
+            x += 0;
+          } else if (cellsData[i + adjacentPositionArrEdgeLeft[num]].hasMine) {
+            x++;
+          }
+        }
+      } else if (cellsData[i].isEdgeRight) {
+        for (let num in adjacentPositionArrEdgeRight) {
+          if (i + adjacentPositionArrEdgeRight[num] < 0 || i + adjacentPositionArrEdgeRight[num] > 99) {
+            x += 0;
+          } else if (cellsData[i + adjacentPositionArrEdgeRight[num]].hasMine) {
+            x++;
+          }
+        }
+      } else {
+        for (let num in adjacentPositionArr) {
+          if (i + adjacentPositionArr[num] < 0 || i + adjacentPositionArr[num] > 99) {
+            x += 0;
+          } else if (cellsData[i + adjacentPositionArr[num]].hasMine) {
+            x++;
+          }
         }
       }
       if (x > 0) {
         document.getElementById(`cell-${prependZero(i)}`).innerHTML = x;
         cellsData[i].hasNumber = true;
-        document
-          .getElementById(`cell-${prependZero(i)}`)
-          .classList.add("numbered");
+        document.getElementById(`cell-${prependZero(i)}`).classList.add("numbered");
       }
     }
   }

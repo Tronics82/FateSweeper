@@ -11,57 +11,49 @@ function start() {
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
   const board = document.getElementsByClassName("board")[0];
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      const id = i.toString() + j.toString();
-      const grid = `
+  for (let i = 0; i < 100; i++) {
+    const grid = `
         <span
-          onclick="clickTile(event, ${Number(id)})" 
-          id="cell-${id}" 
-          oncontextmenu="event.preventDefault(); clickTile(event, ${Number(
-            id
-          )});"
+          onclick="clickTile(event, ${i})" 
+          id="cell-${i}" 
+          oncontextmenu="event.preventDefault(); clickTile(event, ${i});"
           class="cell">
         </span>
       `;
-      board.innerHTML += grid;
-      cellsData.push({
-        id: i.toString() + j.toString(),
-        isEdgeLeft: false,
-        isEdgeRight: false,
-        revealed: false,
-        hasMine: false,
-        hasNumber: false,
-        hasFlag: false,
-      });
-      checkEdges(j, id);
-    }
+    board.innerHTML += grid;
+    cellsData.push({
+      id: i,
+      isEdgeLeft: false,
+      isEdgeRight: false,
+      revealed: false,
+      hasMine: false,
+      hasNumber: false,
+      hasFlag: false,
+    });
+    checkEdges(i);
   }
 }
 
-function checkEdges(j, id) {
-      if (j === 0) {
-        cellsData[Number(id)].isEdgeLeft = true;
-        //document.getElementById(`cell-${id}`).classList.add("edge");
-      } else if (j === 9) {
-        cellsData[Number(id)].isEdgeRight = true;
-        //document.getElementById(`cell-${id}`).classList.add("edge");
-      }
-    }
+//check edges
+function checkEdges(id) {
+  if (id % 10 === 0) {
+    cellsData[Number(id)].isEdgeLeft = true;
+    //document.getElementById(`cell-${id}`).classList.add("edge");
+  } else if ((id + 1) % 10 === 0) {
+    cellsData[Number(id)].isEdgeRight = true;
+    //document.getElementById(`cell-${id}`).classList.add("edge");
+  }
+}
 
 // place mines, happens after first reveal
 function placeMines() {
+  console.log(cellsData);
   let minesLeft = 20;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
-    let stringID = rand;
-    // to account for digits less than 10 as they have 0 in their ID
-    if (rand < 10) {
-      stringID = "0" + rand;
-    }
     if (!cellsData[rand].revealed && !cellsData[rand].hasMine) {
       cellsData[rand].hasMine = true;
-      document.getElementById(`cell-${stringID}`).classList.add("mine");
+      document.getElementById(`cell-${rand}`).classList.add("mine");
       minesLeft--;
     }
   }
@@ -84,6 +76,7 @@ function restart() {
 
 // checks if user wins or loses
 function gameOver() {
+  // getElementsByClassName returns an array, we need 0th index
   const board = document.getElementsByClassName("board")[0];
   board.innerHTML = "";
   alert("Game is over, now what?");
@@ -116,13 +109,6 @@ function clickTile(mouseEvent, id) {
   }
 }
 
-// to account for digits less than 10 as they have 0 in their ID
-function prependZero(number) {
-  if (number < 10) {
-    return "0" + number;
-  } else return number;
-}
-
 // reveals adjacent tiles and numbers depending on user click
 function checkAdjacent(id) {
   /*const cell = document.getElementById(`cell-${id}`);
@@ -148,7 +134,10 @@ function placeNumbers() {
     if (!cellsData[i].hasMine) {
       if (cellsData[i].isEdgeLeft) {
         for (let num in adjacentPositionArrEdgeLeft) {
-          if (i + adjacentPositionArrEdgeLeft[num] < 0 || i + adjacentPositionArrEdgeLeft[num] > 99) {
+          if (
+            i + adjacentPositionArrEdgeLeft[num] < 0 ||
+            i + adjacentPositionArrEdgeLeft[num] > 99
+          ) {
             x += 0;
           } else if (cellsData[i + adjacentPositionArrEdgeLeft[num]].hasMine) {
             x++;
@@ -156,7 +145,10 @@ function placeNumbers() {
         }
       } else if (cellsData[i].isEdgeRight) {
         for (let num in adjacentPositionArrEdgeRight) {
-          if (i + adjacentPositionArrEdgeRight[num] < 0 || i + adjacentPositionArrEdgeRight[num] > 99) {
+          if (
+            i + adjacentPositionArrEdgeRight[num] < 0 ||
+            i + adjacentPositionArrEdgeRight[num] > 99
+          ) {
             x += 0;
           } else if (cellsData[i + adjacentPositionArrEdgeRight[num]].hasMine) {
             x++;
@@ -164,7 +156,10 @@ function placeNumbers() {
         }
       } else {
         for (let num in adjacentPositionArr) {
-          if (i + adjacentPositionArr[num] < 0 || i + adjacentPositionArr[num] > 99) {
+          if (
+            i + adjacentPositionArr[num] < 0 ||
+            i + adjacentPositionArr[num] > 99
+          ) {
             x += 0;
           } else if (cellsData[i + adjacentPositionArr[num]].hasMine) {
             x++;
@@ -172,9 +167,9 @@ function placeNumbers() {
         }
       }
       if (x > 0) {
-        document.getElementById(`cell-${prependZero(i)}`).innerHTML = x;
+        document.getElementById(`cell-${i}`).innerHTML = x;
         cellsData[i].hasNumber = true;
-        document.getElementById(`cell-${prependZero(i)}`).classList.add("numbered");
+        document.getElementById(`cell-${i}`).classList.add("numbered");
       }
     }
   }

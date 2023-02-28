@@ -14,10 +14,10 @@ function constructBoard() {
   for (let i = 0; i < 100; i++) {
     const grid = `
         <span
-          onclick="clickTile(event, ${i})" 
-          id="cell-${i}" 
-          oncontextmenu="event.preventDefault(); clickTile(event, ${i});"
-          class="cell">
+          id="cell-${i}"
+          class="cell"
+          onclick="clickTile(event, ${i})"  
+          oncontextmenu="event.preventDefault(); clickTile(event, ${i});">
         </span>
       `;
     board.innerHTML += grid;
@@ -48,7 +48,7 @@ function checkEdges(id) {
 // place mines, happens after first reveal
 function placeMines() {
   console.log(cellsData);
-  let minesLeft = 20;
+  let minesLeft = 15;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
     if (!cellsData[rand].revealed && !cellsData[rand].hasMine) {
@@ -99,11 +99,11 @@ function clickTile(mouseEvent, id) {
     }
     cell.classList.add("cell-clicked");
     cellsData[id].revealed = true;
-    checkAdjacent(id);
     if (isFirstClick) {
       isFirstClick = false;
       placeMines();
     }
+    checkAdjacent(id);
   } else if (mouseEvent.button === 2) {
     shouldFlag(id);
   }
@@ -111,11 +111,50 @@ function clickTile(mouseEvent, id) {
 
 // reveals adjacent tiles and numbers depending on user click
 function checkAdjacent(id) {
-  /*const cell = document.getElementById(`cell-${id}`);
-  const adjacentPositionArr = [-1, 1, -11, -10, -9, 9, 10, 11];
-  for (num of adjacentPositionArr)
-  if (id)*/
-}
+  //const cell = document.getElementById; was breaking unless i typed manually
+  const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
+  const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
+  const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
+
+  if (cellsData[id].hasNumber) {
+    return;
+  } 
+
+  if (cellsData[id].isEdgeLeft) {
+    for (let num in adjacentPositionArrEdgeLeft) {
+      if (
+        id + adjacentPositionArrEdgeLeft[num] < 0 ||
+        id + adjacentPositionArrEdgeLeft[num] > 99
+      ) {
+      } else {
+        document.getElementById(`cell-${id + adjacentPositionArrEdgeLeft[num]}`).classList.add("cell-clicked");
+        cellsData[id + adjacentPositionArrEdgeLeft[num]].revealed = true;
+      }
+    }
+  } else if (cellsData[id].isEdgeRight) {
+    for (let num in adjacentPositionArrEdgeRight) {
+      if (
+        id + adjacentPositionArrEdgeRight[num] < 0 ||
+        id + adjacentPositionArrEdgeRight[num] > 99
+      ) {
+      } else {
+        document.getElementById(`cell-${id + adjacentPositionArrEdgeRight[num]}`).classList.add("cell-clicked");
+        cellsData[id + adjacentPositionArrEdgeRight[num]].revealed = true;
+      }
+    }
+  } else {
+    for (let num in adjacentPositionArr) {
+      if (
+        id + adjacentPositionArr[num] < 0 ||
+        id + adjacentPositionArr[num] > 99
+      ) {
+      } else {
+        document.getElementById(`cell-${id + adjacentPositionArr[num]}`).classList.add("cell-clicked");
+        cellsData[id + adjacentPositionArr[num]].revealed = true;
+      }
+    }
+  }
+} 
 
 // helper function to checkAdjacent's adjacent tiles
 function checkAdjacentHelper(id) {}

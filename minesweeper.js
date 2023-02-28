@@ -122,11 +122,14 @@ function checkAdjacentHelper(id) {}
 
 // marks the cleared tiles with numbers if there is adjacent mines
 function placeNumbers() {
-  //needs to check the 9 cells around itself. display num 0-9 based on num of mines.
-  //cell id -1, +1, -11, -10, -9, +9, +10, +11
-  const adjacentPositionArr = [-1, 1, -11, -10, -9, 9, 10, 11];
-  const adjacentPositionArrEdgeLeft = [1, -10, -9, 10, 11];
-  const adjacentPositionArrEdgeRight = [-1, -11, -10, 9, 10];
+  //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
+  //Left: cell id + [1, -9, 11, -10, 10] 
+  //Right: cell id +[-1, 9, -11, -10, 10]
+  //All: cell id +[1, -9, 11, -10, 10, -1, 9, -11]
+  //array in array? swap out the 4? .shift and .pop? i just chose slice.
+  const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
+  const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
+  const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
   let x = 0;
 
   for (let i = 0; i < 100; i++) {
@@ -138,7 +141,6 @@ function placeNumbers() {
             i + adjacentPositionArrEdgeLeft[num] < 0 ||
             i + adjacentPositionArrEdgeLeft[num] > 99
           ) {
-            x += 0;
           } else if (cellsData[i + adjacentPositionArrEdgeLeft[num]].hasMine) {
             x++;
           }
@@ -149,7 +151,6 @@ function placeNumbers() {
             i + adjacentPositionArrEdgeRight[num] < 0 ||
             i + adjacentPositionArrEdgeRight[num] > 99
           ) {
-            x += 0;
           } else if (cellsData[i + adjacentPositionArrEdgeRight[num]].hasMine) {
             x++;
           }
@@ -160,7 +161,6 @@ function placeNumbers() {
             i + adjacentPositionArr[num] < 0 ||
             i + adjacentPositionArr[num] > 99
           ) {
-            x += 0;
           } else if (cellsData[i + adjacentPositionArr[num]].hasMine) {
             x++;
           }

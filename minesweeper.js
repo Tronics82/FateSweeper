@@ -1,6 +1,9 @@
 let cellsData = [];
 let isFirstClick = true;
 let isGameOver = false;
+const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
+const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
+const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
 
 // starts the game, calls create board and call time
 function start() {
@@ -47,7 +50,6 @@ function checkEdges(id) {
 
 // place mines, happens after first reveal
 function placeMines() {
-  console.log(cellsData);
   let minesLeft = 15;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
@@ -111,64 +113,52 @@ function clickTile(mouseEvent, id) {
 
 // reveals adjacent tiles and numbers depending on user click
 function checkAdjacent(id) {
-  //const cell = document.getElementById; was breaking unless i typed manually
-  const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
-  const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
-  const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
-
   if (cellsData[id].hasNumber) {
     return;
-  } 
-
-  if (cellsData[id].isEdgeLeft) {
-    for (let num in adjacentPositionArrEdgeLeft) {
-      if (
-        id + adjacentPositionArrEdgeLeft[num] < 0 ||
-        id + adjacentPositionArrEdgeLeft[num] > 99
-      ) {
-      } else {
-        document.getElementById(`cell-${id + adjacentPositionArrEdgeLeft[num]}`).classList.add("cell-clicked");
-        cellsData[id + adjacentPositionArrEdgeLeft[num]].revealed = true;
-      }
-    }
-  } else if (cellsData[id].isEdgeRight) {
-    for (let num in adjacentPositionArrEdgeRight) {
-      if (
-        id + adjacentPositionArrEdgeRight[num] < 0 ||
-        id + adjacentPositionArrEdgeRight[num] > 99
-      ) {
-      } else {
-        document.getElementById(`cell-${id + adjacentPositionArrEdgeRight[num]}`).classList.add("cell-clicked");
-        cellsData[id + adjacentPositionArrEdgeRight[num]].revealed = true;
-      }
-    }
-  } else {
-    for (let num in adjacentPositionArr) {
-      if (
-        id + adjacentPositionArr[num] < 0 ||
-        id + adjacentPositionArr[num] > 99
-      ) {
-      } else {
-        document.getElementById(`cell-${id + adjacentPositionArr[num]}`).classList.add("cell-clicked");
-        cellsData[id + adjacentPositionArr[num]].revealed = true;
-      }
-    }
   }
-} 
+
+  let selectedArr;
+  if (cellsData[id].isEdgeLeft) {
+    selectedArr = adjacentPositionArrEdgeLeft;
+  } else if (cellsData[id].isEdgeRight) {
+    selectedArr = adjacentPositionArrEdgeRight;
+  } else {
+    selectedArr = adjacentPositionArr;
+  }
+
+  for (let num of selectedArr) {
+    if (id + selectedArr[num] >= 0 && id + selectedArr[num] <= 99) {
+      document
+        .getElementById(`cell-${id + selectedArr[num]}`)
+        .classList.add("cell-clicked");
+      cellsData[id + selectedArr[num]].revealed = true;
+    }
+    checkAdjacent(id + selectedArr[num]);
+  }
+}
 
 // helper function to checkAdjacent's adjacent tiles
 function checkAdjacentHelper(id) {}
 
+//selects Edge Array
+function setSelectedArr(cell) {
+  let selectedArr;
+  if (cell.isEdgeLeft) {
+    selectedArr = adjacentPositionArrEdgeLeft;
+  } else if (cell.isEdgeRight) {
+    selectedArr = adjacentPositionArrEdgeRight;
+  } else {
+    selectedArr = adjacentPositionArr;
+  }
+}
+
 // marks the cleared tiles with numbers if there is adjacent mines
 function placeNumbers() {
   //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
-  //Left: cell id + [1, -9, 11, -10, 10] 
+  //Left: cell id + [1, -9, 11, -10, 10]
   //Right: cell id +[-1, 9, -11, -10, 10]
   //All: cell id +[1, -9, 11, -10, 10, -1, 9, -11]
   //array in array? swap out the 4? .shift and .pop? i just chose slice.
-  const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
-  const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
-  const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
   let x = 0;
 
   for (let i = 0; i < 100; i++) {

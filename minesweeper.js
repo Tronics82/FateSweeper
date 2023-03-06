@@ -55,11 +55,11 @@ function checkEdges(id) {
 }
 
 // place mines, happens after first reveal
-function placeMines() {
+function placeMines(id) {
   let minesLeft = 20;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
-    if (!cellsData[rand].isRevealed && !cellsData[rand].hasMine) {
+    if (rand != id && !cellsData[rand].hasMine) {
       cellsData[rand].hasMine = true;
       document.getElementById(`cell-${rand}`).classList.add("mine");
       minesLeft--;
@@ -76,6 +76,9 @@ function pause() {}
 
 // restart the game if game is over
 function restart() {
+  // getElementsByClassName returns an array, we need 0th index
+  const board = document.getElementsByClassName("board")[0];
+  board.innerHTML = "";
   document.getElementById("titleScreen").style.display = "flex";
   cellsData = [];
   isFirstClick = true;
@@ -83,11 +86,12 @@ function restart() {
 }
 
 // checks if user wins or loses
-function gameOver() {
-  // getElementsByClassName returns an array, we need 0th index
-  const board = document.getElementsByClassName("board")[0];
-  board.innerHTML = "";
-  alert("Game is over, now what?");
+function gameOver(id) {
+  if (cellsData[id].hasMine) {
+    alert("BOOM!\nGame Over");
+  } else {
+    alert("Congratulations!\nYou Won!");
+  }
   restart();
 }
 
@@ -102,14 +106,13 @@ function clickTile(mouseEvent, id) {
   if (mouseEvent.button === 0 && !cellsData[id].hasFlag) {
     if (cellsData[id].hasMine) {
       isGameOver = true;
-      gameOver();
+      gameOver(id);
       return;
     }
     console.log(`cell clicked ${id}`);   
     if (isFirstClick) {
       isFirstClick = false;
-      revealCell(id);
-      placeMines();
+      placeMines(id);
     }
     checkAdjacent(id);
   } else if (mouseEvent.button === 2) {
@@ -180,9 +183,6 @@ function setSelectedArr(cell) {
 // marks the cleared tiles with numbers if there is adjacent mines
 function placeNumbers() {
   //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
-  //Left: cell id + [1, -9, 11, -10, 10]
-  //Right: cell id +[-1, 9, -11, -10, 10]
-  //All: cell id +[1, -9, 11, -10, 10, -1, 9, -11]
   let x = 0;
   
   for (let id = 0; id < 100; id++) {

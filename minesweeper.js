@@ -1,9 +1,6 @@
 let cellsData = [];
 let isFirstClick = true;
 let isGameOver = false;
-const adjacentPositionArr = [1, -9, 11, -10, 10, -1, 9, -11];
-const adjacentPositionArrEdgeLeft = adjacentPositionArr.slice(0, 5);
-const adjacentPositionArrEdgeRight = adjacentPositionArr.slice(3);
 
 // starts the game, calls create board and call time
 function start() {
@@ -28,6 +25,8 @@ function constructBoard() {
       id: i,
       isEdgeLeft: false,
       isEdgeRight: false,
+      isEdgeTop: false,
+      isEdgeBottom: false,
       isRevealed: false,
       hasMine: false,
       hasNumber: false,
@@ -40,17 +39,24 @@ function constructBoard() {
 //check edges
 function checkEdges(id) {
   if (id % 10 === 0) {
-    cellsData[Number(id)].isEdgeLeft = true;
+    cellsData[id].isEdgeLeft = true;
     //document.getElementById(`cell-${id}`).classList.add("edge");
   } else if ((id + 1) % 10 === 0) {
-    cellsData[Number(id)].isEdgeRight = true;
+    cellsData[id].isEdgeRight = true;
+    //document.getElementById(`cell-${id}`).classList.add("edge");
+  }
+  if (id < 10) {
+    cellsData[id].isEdgeTop = true;
+    //document.getElementById(`cell-${id}`).classList.add("edge");
+  } else if (id >= 90) {
+    cellsData[id].isEdgeBottom = true;
     //document.getElementById(`cell-${id}`).classList.add("edge");
   }
 }
 
 // place mines, happens after first reveal
 function placeMines() {
-  let minesLeft = 15;
+  let minesLeft = 20;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
     if (!cellsData[rand].isRevealed && !cellsData[rand].hasMine) {
@@ -102,6 +108,7 @@ function clickTile(mouseEvent, id) {
     console.log(`cell clicked ${id}`);   
     if (isFirstClick) {
       isFirstClick = false;
+      revealCell(id);
       placeMines();
     }
     checkAdjacent(id);
@@ -111,11 +118,9 @@ function clickTile(mouseEvent, id) {
 }
 
 // reveals adjacent tiles and numbers depending on user click
-function checkAdjacent(id) {
-  const cell = document.getElementById(`cell-${id}`);
+function checkAdjacent(id) { 
   if (cellsData[id].hasNumber) {
-    cell.classList.add("cell-clicked");
-    cellsData[id].isRevealed = true;
+    revealCell(id);
     return;
   }
 
@@ -123,31 +128,52 @@ function checkAdjacent(id) {
     return;
   }
 
-  cell.classList.add("cell-clicked");
-  cellsData[id].isRevealed = true;
-
+  revealCell(id);
+  
   const selectedArr = setSelectedArr(cellsData[id]);
 
   for (let index of selectedArr) {
-    console.log(index);
-    if (id + index < 100 && id + index >= 0) {
-      console.log(selectedArr);
-      checkAdjacent(id + index);
-    }
+    //console.log(index);
+    checkAdjacent(id + index);  
   }
 }
 
 // helper function to checkAdjacent's adjacent tiles
-function checkAdjacentHelper(id) {}
+function revealCell(id) {
+  const cell = document.getElementById(`cell-${id}`);
+
+  cell.classList.add("cell-clicked");
+  cellsData[id].isRevealed = true;
+  cell.classList.remove("flagged");
+  cellsData[id].hasFlag = false;
+}
 
 //selects Edge Array
+// takes current index, id
+  // check each adjacent square by adding the indexes to the current id
+  // ie id = 5, 5 + 1, 5 - 1, 5 + 10, ... 5 + 11
+  // for each iteration of that adjacentPositionsArr, push that index into the new array if it passes,
+  // return it
 function setSelectedArr(cell) {
-  if (cell.isEdgeLeft) {
-    return adjacentPositionArrEdgeLeft;
+  
+  if (!cell.isEdgeLeft && !cell.isEdgeRight && !cell.isEdgeTop && !cell.isEdgeBottom) {
+    return [1, -9, 11, -10, 10, -1, 9, -11]
+  } else if (cell.isEdgeLeft && cell.isEdgeTop) {
+    return [1, 11, 10];
+  } else if (cell.isEdgeLeft && cell.isEdgeBottom) {
+    return [1, -9, -10];
+  } else if (cell.isEdgeRight && cell.isEdgeTop) {
+    return [-1, 9, 10];
+  } else if (cell.isEdgeRight && cell.isEdgeBottom) {
+    return [-1, -10, -11];
+  } else if (cell.isEdgeLeft) {
+    return [1, -9, 11, -10, 10];
   } else if (cell.isEdgeRight) {
-    return adjacentPositionArrEdgeRight;
-  } else {
-    return adjacentPositionArr;
+    return [-1, 9, -11, -10, 10];
+  } else if (cell.isEdgeTop) {
+    return [1, -1, 9, 11, 10];
+  } else if (cell.isEdgeBottom) {
+    return [1, -1, -9, -11, -10]
   }
 }
 
@@ -157,47 +183,21 @@ function placeNumbers() {
   //Left: cell id + [1, -9, 11, -10, 10]
   //Right: cell id +[-1, 9, -11, -10, 10]
   //All: cell id +[1, -9, 11, -10, 10, -1, 9, -11]
-  //array in array? swap out the 4? .shift and .pop? i just chose slice.
   let x = 0;
-
-  for (let i = 0; i < 100; i++) {
+  
+  for (let id = 0; id < 100; id++) {
+    const selectedArr = setSelectedArr(cellsData[id]);
     x = 0;
-    if (!cellsData[i].hasMine) {
-      if (cellsData[i].isEdgeLeft) {
-        for (let num in adjacentPositionArrEdgeLeft) {
-          if (
-            i + adjacentPositionArrEdgeLeft[num] < 0 ||
-            i + adjacentPositionArrEdgeLeft[num] > 99
-          ) {
-          } else if (cellsData[i + adjacentPositionArrEdgeLeft[num]].hasMine) {
-            x++;
-          }
-        }
-      } else if (cellsData[i].isEdgeRight) {
-        for (let num in adjacentPositionArrEdgeRight) {
-          if (
-            i + adjacentPositionArrEdgeRight[num] < 0 ||
-            i + adjacentPositionArrEdgeRight[num] > 99
-          ) {
-          } else if (cellsData[i + adjacentPositionArrEdgeRight[num]].hasMine) {
-            x++;
-          }
-        }
-      } else {
-        for (let num in adjacentPositionArr) {
-          if (
-            i + adjacentPositionArr[num] < 0 ||
-            i + adjacentPositionArr[num] > 99
-          ) {
-          } else if (cellsData[i + adjacentPositionArr[num]].hasMine) {
-            x++;
-          }
+    if (!cellsData[id].hasMine) { 
+      for (let index of selectedArr) {
+        if (cellsData[id + index].hasMine) {
+          x++;
         }
       }
       if (x > 0) {
-        document.getElementById(`cell-${i}`).innerHTML = x;
-        cellsData[i].hasNumber = true;
-        document.getElementById(`cell-${i}`).classList.add("numbered");
+        document.getElementById(`cell-${id}`).innerHTML = x;
+        cellsData[id].hasNumber = true;
+        document.getElementById(`cell-${id}`).classList.add("numbered");
       }
     }
   }
@@ -206,7 +206,7 @@ function placeNumbers() {
 // place a flag on a tile
 function shouldFlag(id) {
   const cell = document.getElementById(`cell-${id}`);
-  if (!cellsData[id].isRevealed)
+  if (!cellsData[id].isRevealed) {
     if (cellsData[id].hasFlag) {
       cellsData[id].hasFlag = false;
       cell.classList.remove("flagged");
@@ -214,6 +214,7 @@ function shouldFlag(id) {
       cellsData[id].hasFlag = true;
       cell.classList.add("flagged");
     }
+  }
 }
 
 // starts timer

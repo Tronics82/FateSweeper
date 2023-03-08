@@ -23,34 +23,11 @@ function constructBoard() {
     board.innerHTML += grid;
     cellsData.push({
       id: i,
-      isEdgeLeft: false,
-      isEdgeRight: false,
-      isEdgeTop: false,
-      isEdgeBottom: false,
       isRevealed: false,
       hasMine: false,
       hasNumber: false,
       hasFlag: false,
     });
-    checkEdges(i);
-  }
-}
-
-//check edges
-function checkEdges(id) {
-  if (id % 10 === 0) {
-    cellsData[id].isEdgeLeft = true;
-    //document.getElementById(`cell-${id}`).classList.add("edge");
-  } else if ((id + 1) % 10 === 0) {
-    cellsData[id].isEdgeRight = true;
-    //document.getElementById(`cell-${id}`).classList.add("edge");
-  }
-  if (id < 10) {
-    cellsData[id].isEdgeTop = true;
-    //document.getElementById(`cell-${id}`).classList.add("edge");
-  } else if (id >= 90) {
-    cellsData[id].isEdgeBottom = true;
-    //document.getElementById(`cell-${id}`).classList.add("edge");
   }
 }
 
@@ -59,7 +36,7 @@ function placeMines(id) {
   let minesLeft = 20;
   while (minesLeft > 0) {
     const rand = Math.floor(Math.random() * 100);
-    if (rand != id && !cellsData[rand].hasMine) {
+    if (rand !== id && !cellsData[rand].hasMine) {
       cellsData[rand].hasMine = true;
       document.getElementById(`cell-${rand}`).classList.add("mine");
       minesLeft--;
@@ -133,7 +110,7 @@ function checkAdjacent(id) {
 
   revealCell(id);
   
-  const selectedArr = setSelectedArr(cellsData[id]);
+  const selectedArr = setSelectedArr(id);
 
   for (let index of selectedArr) {
     //console.log(index);
@@ -157,27 +134,24 @@ function revealCell(id) {
   // ie id = 5, 5 + 1, 5 - 1, 5 + 10, ... 5 + 11
   // for each iteration of that adjacentPositionsArr, push that index into the new array if it passes,
   // return it
-function setSelectedArr(cell) {
-  
-  if (!cell.isEdgeLeft && !cell.isEdgeRight && !cell.isEdgeTop && !cell.isEdgeBottom) {
-    return [1, -9, 11, -10, 10, -1, 9, -11]
-  } else if (cell.isEdgeLeft && cell.isEdgeTop) {
-    return [1, 11, 10];
-  } else if (cell.isEdgeLeft && cell.isEdgeBottom) {
-    return [1, -9, -10];
-  } else if (cell.isEdgeRight && cell.isEdgeTop) {
-    return [-1, 9, 10];
-  } else if (cell.isEdgeRight && cell.isEdgeBottom) {
-    return [-1, -10, -11];
-  } else if (cell.isEdgeLeft) {
-    return [1, -9, 11, -10, 10];
-  } else if (cell.isEdgeRight) {
-    return [-1, 9, -11, -10, 10];
-  } else if (cell.isEdgeTop) {
-    return [1, -1, 9, 11, 10];
-  } else if (cell.isEdgeBottom) {
-    return [1, -1, -9, -11, -10]
+function setSelectedArr(id) {
+  const selectedArr = [1, -9, 11, -10, 10, -1, 9, -11];
+  const elementsToRemove = [];
+  if (id >= 90) {
+    // selectedArr.splice("9, 10, 11");
+    elementsToRemove.push(9, 10, 11);
+  } if (id < 10) {
+    // selectedArr.splice("-9, -10, -11");
+    elementsToRemove.push(-9, -10, -11);
+  } if (id % 10 === 0) {
+    // selectedArr.splice("-1, 9, -11");
+    elementsToRemove.push(-1, 9, -11);
+  } if ((id + 1) % 10 === 0) {
+    // selectedArr.splice("1, -9, 11")
+    elementsToRemove.push(1, -9, 11);
   }
+
+  return selectedArr.filter(number => !elementsToRemove.includes(number));
 }
 
 // marks the cleared tiles with numbers if there is adjacent mines
@@ -186,7 +160,7 @@ function placeNumbers() {
   let x = 0;
   
   for (let id = 0; id < 100; id++) {
-    const selectedArr = setSelectedArr(cellsData[id]);
+    const selectedArr = setSelectedArr(id);
     x = 0;
     if (!cellsData[id].hasMine) { 
       for (let index of selectedArr) {

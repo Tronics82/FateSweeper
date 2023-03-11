@@ -37,6 +37,7 @@ button:hover {
     flex: 0 0 0; /*100vh*/
     width: 500px;
     background-color: beige;
+    cursor: pointer;
 }
 
 .cell {
@@ -56,6 +57,7 @@ button:hover {
 
 .cell-clicked {
     background-color: white;
+    cursor: default;
 }
 
 .numbered {

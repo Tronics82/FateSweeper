@@ -164,8 +164,8 @@ function revealCell(id) {
 
 //gameOvers when all non-mine cells are revealed
 function winChecker(id) {
-  revealedTileCount = cellsData.filter(cell => cell.isRevealed).length;
-  mineCount = cellsData.filter(cell => cell.hasMine).length;
+  const revealedTileCount = cellsData.filter(cell => cell.isRevealed).length;
+  const mineCount = cellsData.filter(cell => cell.hasMine).length;
 
   if (revealedTileCount + mineCount === cellsData.length) 
     gameOver(id);

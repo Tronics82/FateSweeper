@@ -7,6 +7,39 @@ function start() {
   constructBoard();
 }
 
+// chooses game difficulity
+function selectMode() {}
+
+// pauses game
+function pause() {}
+
+// starts timer
+function startTime() {}
+
+// stops timer
+function stopTime() {}
+
+// restart the game if game is over
+function restart() {
+  // getElementsByClassName returns an array, we need 0th index
+  const board = document.getElementsByClassName("board")[0];
+  board.innerHTML = "";
+  document.getElementById("titleScreen").style.display = "flex";
+  cellsData = [];
+  isFirstClick = true;
+  isGameOver = false;
+}
+
+// checks if user wins or loses
+function gameOver(id) {
+  if (cellsData[id].hasMine) {
+    alert("BOOM!\nGame Over");
+  } else {
+    alert("Congratulations!\nYou Won!");
+  }
+  restart();
+}
+
 // creates the board
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
@@ -45,31 +78,27 @@ function placeMines(id) {
   placeNumbers();
 }
 
-// chooses game difficulity
-function selectMode() {}
-
-// pauses game
-function pause() {}
-
-// restart the game if game is over
-function restart() {
-  // getElementsByClassName returns an array, we need 0th index
-  const board = document.getElementsByClassName("board")[0];
-  board.innerHTML = "";
-  document.getElementById("titleScreen").style.display = "flex";
-  cellsData = [];
-  isFirstClick = true;
-  isGameOver = false;
-}
-
-// checks if user wins or loses
-function gameOver(id) {
-  if (cellsData[id].hasMine) {
-    alert("BOOM!\nGame Over");
-  } else {
-    alert("Congratulations!\nYou Won!");
+// marks the cleared tiles with numbers if there is adjacent mines
+function placeNumbers() {
+  //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
+  let x = 0;
+  
+  for (let id = 0; id < 100; id++) {
+    const selectedArr = setSelectedArr(id);
+    x = 0;
+    if (!cellsData[id].hasMine) { 
+      for (let index of selectedArr) {
+        if (cellsData[id + index].hasMine) {
+          x++;
+        }
+      }
+      if (x > 0) {
+        document.getElementById(`cell-${id}`).innerHTML = x;
+        cellsData[id].hasNumber = true;
+        document.getElementById(`cell-${id}`).classList.add("numbered");
+      }
+    }
   }
-  restart();
 }
 
 // reveals the tile that the user clicked
@@ -118,63 +147,45 @@ function checkAdjacent(id) {
   }
 }
 
-// helper function to checkAdjacent's adjacent tiles
+// reveals cells and gameOvers when all non-mine cells are revealed
 function revealCell(id) {
   const cell = document.getElementById(`cell-${id}`);
-
+  
   cell.classList.add("cell-clicked");
   cellsData[id].isRevealed = true;
   cell.classList.remove("flagged");
   cellsData[id].hasFlag = false;
+
+  /*if (cellsData.filter(cell => cell.isRevealed).length + cellsData.filter(cell => cell.hasMine).length === cellsData.length) 
+    gameOver(id);*/
+  
+  winChecker(id);
 }
 
-//selects Edge Array
-// takes current index, id
-  // check each adjacent square by adding the indexes to the current id
-  // ie id = 5, 5 + 1, 5 - 1, 5 + 10, ... 5 + 11
-  // for each iteration of that adjacentPositionsArr, push that index into the new array if it passes,
-  // return it
+//gameOvers when all non-mine cells are revealed
+function winChecker(id) {
+  revealedTileCount = cellsData.filter(cell => cell.isRevealed).length;
+  mineCount = cellsData.filter(cell => cell.hasMine).length;
+
+  if (revealedTileCount + mineCount === cellsData.length) 
+    gameOver(id);
+}
+
+//returns Array based on Edge Conditions
 function setSelectedArr(id) {
   const selectedArr = [1, -9, 11, -10, 10, -1, 9, -11];
   const elementsToRemove = [];
   if (id >= 90) {
-    // selectedArr.splice("9, 10, 11");
     elementsToRemove.push(9, 10, 11);
   } if (id < 10) {
-    // selectedArr.splice("-9, -10, -11");
     elementsToRemove.push(-9, -10, -11);
   } if (id % 10 === 0) {
-    // selectedArr.splice("-1, 9, -11");
     elementsToRemove.push(-1, 9, -11);
   } if ((id + 1) % 10 === 0) {
-    // selectedArr.splice("1, -9, 11")
     elementsToRemove.push(1, -9, 11);
   }
 
   return selectedArr.filter(number => !elementsToRemove.includes(number));
-}
-
-// marks the cleared tiles with numbers if there is adjacent mines
-function placeNumbers() {
-  //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
-  let x = 0;
-  
-  for (let id = 0; id < 100; id++) {
-    const selectedArr = setSelectedArr(id);
-    x = 0;
-    if (!cellsData[id].hasMine) { 
-      for (let index of selectedArr) {
-        if (cellsData[id + index].hasMine) {
-          x++;
-        }
-      }
-      if (x > 0) {
-        document.getElementById(`cell-${id}`).innerHTML = x;
-        cellsData[id].hasNumber = true;
-        document.getElementById(`cell-${id}`).classList.add("numbered");
-      }
-    }
-  }
 }
 
 // place a flag on a tile
@@ -190,12 +201,3 @@ function shouldFlag(id) {
     }
   }
 }
-
-// starts timer
-function startTime() {}
-
-// stops timer
-function stopTime() {}
-
-// reveals tiles
-function revealTile() {}

@@ -1,37 +1,76 @@
 let cellsData = [];
 let isFirstClick = true;
-let isGameOver = false;
+let isGamePaused = false;
+let timeElapsed = 0;
+let timerId;
 
 // starts the game, calls create board and call time
 function start() {
   constructBoard();
+  startTime();
 }
 
 // chooses game difficulity
 function selectMode() {}
 
 // pauses game
-function pause() {}
+function pause() {
+  if (!isGamePaused) {
+    isGamePaused = true;
+    document.getElementsByClassName("pause-button")[0].innerHTML = "Resume";
+    document.getElementsByClassName("board")[0].style.display = "None";
+    clearInterval(timerId);
+  } else {
+    document.getElementsByClassName("pause-button")[0].innerHTML = "Pause";
+    document.getElementsByClassName("board")[0].style.display = "flex";
+    isGamePaused = false;
+    startTime();
+  }
+  // stop timer
+  // hide board and only show button
+}
 
 // starts timer
-function startTime() {}
+function startTime() {
+  // setInterval a global variable to keep track of time 
+  // increment this value every second
+  // display in the html
+  timerId = setInterval(() => {
+    timeElapsed++;
+    const timer = document.getElementsByClassName("game-timer")[0];
+    timer.innerHTML = `Timer: ${timeElapsed}`; 
+  }, 1000);
+}
 
 // stops timer
-function stopTime() {}
+function stopTime() {
+  clearInterval(timerId);
+}
+
+// start/stop/mute music player
+function musicPlayer() {}
+ 
+// throw image uris (string path) into an array, generate random number and grab the index of the image uri using the random number
+// i.e "../assets/...image"
+function generateBackground() {}
 
 // restart the game if game is over
 function restart() {
   // getElementsByClassName returns an array, we need 0th index
   const board = document.getElementsByClassName("board")[0];
+  const gameHeader = document.getElementsByClassName("game-header")[0];
+  gameHeader.style.display = "None";
+  document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   board.innerHTML = "";
   document.getElementById("titleScreen").style.display = "flex";
   cellsData = [];
   isFirstClick = true;
-  isGameOver = false;
+  timeElapsed = 0;
 }
 
 // checks if user wins or loses
 function gameOver(id) {
+  stopTime();
   if (cellsData[id].hasMine) {
     alert("BOOM!\nGame Over");
   } else {
@@ -43,6 +82,8 @@ function gameOver(id) {
 // creates the board
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
+  const game = document.getElementsByClassName("game-header")[0];
+  game.style.display = "flex";
   const board = document.getElementsByClassName("board")[0];
   for (let i = 0; i < 100; i++) {
     const grid = `
@@ -111,7 +152,6 @@ function clickTile(mouseEvent, id) {
   const cell = document.getElementById(`cell-${id}`);
   if (mouseEvent.button === 0 && !cellsData[id].hasFlag) {
     if (cellsData[id].hasMine) {
-      isGameOver = true;
       gameOver(id);
       return;
     }
@@ -147,7 +187,7 @@ function checkAdjacent(id) {
   }
 }
 
-// reveals cells and gameOvers when all non-mine cells are revealed
+// reveals cells and removes flags
 function revealCell(id) {
   const cell = document.getElementById(`cell-${id}`);
   
@@ -155,9 +195,6 @@ function revealCell(id) {
   cellsData[id].isRevealed = true;
   cell.classList.remove("flagged");
   cellsData[id].hasFlag = false;
-
-  /*if (cellsData.filter(cell => cell.isRevealed).length + cellsData.filter(cell => cell.hasMine).length === cellsData.length) 
-    gameOver(id);*/
   
   winChecker(id);
 }

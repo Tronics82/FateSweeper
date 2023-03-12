@@ -32,9 +32,6 @@ function pause() {
 
 // starts timer
 function startTime() {
-  // setInterval a global variable to keep track of time 
-  // increment this value every second
-  // display in the html
   timerId = setInterval(() => {
     timeElapsed++;
     const timer = document.getElementsByClassName("game-timer")[0];

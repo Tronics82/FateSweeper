@@ -3,11 +3,11 @@ let isFirstClick = true;
 let isGamePaused = false;
 let timeElapsed = 0;
 let timerId;
+let isDisplayClear = false;
 
 // starts the game, calls create board and call time
 function start() {
   constructBoard();
-  startTime();
 }
 
 // chooses game difficulity
@@ -60,20 +60,55 @@ function restart() {
   document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   board.innerHTML = "";
   document.getElementById("titleScreen").style.display = "flex";
+  document.getElementsByClassName("pause-button")[0].style.display = "initial";
+  document.getElementsByClassName("display-button")[0].style.display = "none";
   cellsData = [];
   isFirstClick = true;
+  isDisplayClear = false;
   timeElapsed = 0;
+  stopTime();
 }
 
 // checks if user wins or loses
 function gameOver(id) {
   stopTime();
+  document.getElementsByClassName("pause-button")[0].style.display = "none";
   if (cellsData[id].hasMine) {
     alert("BOOM!\nGame Over");
+    document.querySelectorAll(".mine").forEach(cell => {
+      cell.style.backgroundColor = "rgba(255,0,0,1)";
+    });
   } else {
     alert("Congratulations!\nYou Won!");
+    document.querySelectorAll(".flagged").forEach(cell => {
+      cell.classList.remove("flagged");
+    });
+    document.getElementsByClassName("display-button")[0].style.display = "initial";
+    displaySwitch();
   }
-  restart();
+}
+
+function displaySwitch() {
+  if (isDisplayClear) {
+    document.querySelectorAll(".cell").forEach(cell => {
+      cell.style.backgroundColor = "rgba(197, 197, 194, 0.8)";
+      cell.style.border = "1px solid whitesmoke";
+      cell.style.color = "rgba(0,0,0,1)";
+      cell.style.textShadow = "1px 1px 2px rgba(255,255,255,1)";
+    });
+    document.querySelectorAll(".mine").forEach(cell => {
+      cell.style.backgroundColor = "rgba(255,0,0,1)";
+    });
+    isDisplayClear = false;
+  } else {
+    document.querySelectorAll(".cell").forEach(cell => {
+      cell.style.backgroundColor = "rgba(0,0,0,0)";
+      cell.style.border = "none";
+      cell.style.color = "rgba(0,0,0,0)";
+      cell.style.textShadow = "1px 1px 2px rgba(0,0,0,0)";
+    });
+    isDisplayClear = true;
+  } 
 }
 
 // creates the board
@@ -133,7 +168,6 @@ function placeNumbers() {
       if (x > 0) {
         document.getElementById(`cell-${id}`).innerHTML = x;
         cellsData[id].hasNumber = true;
-        document.getElementById(`cell-${id}`).classList.add("numbered");
       }
     }
   }
@@ -155,6 +189,7 @@ function clickTile(mouseEvent, id) {
     console.log(`cell clicked ${id}`);   
     if (isFirstClick) {
       isFirstClick = false;
+      startTime();
       placeMines(id);
     }
     checkAdjacent(id);
@@ -192,6 +227,11 @@ function revealCell(id) {
   cellsData[id].isRevealed = true;
   cell.classList.remove("flagged");
   cellsData[id].hasFlag = false;
+
+  //if (cellsData[id].hasNumber) {
+    document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)";
+    document.getElementsByClassName("cell")[id].style.textShadow = "1px 1px 2px rgba(255,255,255,1)";
+  //}
   
   winChecker(id);
 }

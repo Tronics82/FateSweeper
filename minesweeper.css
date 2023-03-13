@@ -32,6 +32,10 @@ button:hover {
     background-color: #c2bcbc;
 }
 
+.display-button {
+    display: none;
+}
+
 .board {
     display: flex;
     justify-content: center;
@@ -40,7 +44,7 @@ button:hover {
     flex: 0 0 0; /*100vh*/
     width: 500px;
     background-size: 500px 500px;
-    /* background-color: beige; */
+    background-color: beige;
     cursor: pointer;
     background-image: url("./assets/images/fate_nero_and_tamamo.jpg");
     background-position: center;
@@ -56,27 +60,27 @@ button:hover {
     height: 50px;
     flex: 0 0 50px;
     background-color: rgb(197, 197, 194);
-}
 
-.cell:hover {
-    background-color: #fff;
-}
-
-.cell-clicked {
-    background: rgba(0,0,0,0);
-    cursor: default;
-}
-
-
-.numbered {
-    font: 16px Arial, sans-serif;
+    font: 15px Arial, sans-serif;
+    font-weight:bold;
+    color: rgba(0,0,0,0);
     /* background-image: url();*/
     object-fit: contain;
 }
 
-.mine {
-    background-color: red;
+.cell:hover {
+    /*background-color: #fff;*/
+    border: 3px dashed black;
 }
+
+.cell-clicked {
+    background: rgba(197, 197, 194, 0.7);
+    cursor: default;
+}
+
+/*.mine {
+    background-color: red;
+}*/
 
 .flagged {
     background-image: url("./assets/images/minesweeper-flag-icon-v1-002-3d-model-low-poly-max-obj-3ds-fbx-ma-stl.jpg");

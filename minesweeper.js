@@ -1,9 +1,10 @@
 let cellsData = [];
 let isFirstClick = true;
 let isGamePaused = false;
+let isGameOver = false;
+let isDisplayClear = false;
 let timeElapsed = 0;
 let timerId;
-let isDisplayClear = false;
 
 // starts the game, calls create board and call time
 function start() {
@@ -64,15 +65,20 @@ function restart() {
   document.getElementsByClassName("display-button")[0].style.display = "none";
   cellsData = [];
   isFirstClick = true;
+  isGameOver = false;
   isDisplayClear = false;
   timeElapsed = 0;
   stopTime();
 }
 
-// checks if user wins or loses
+// Determines Win or Loss, Disable onClick, and Hide Pause Button.
 function gameOver(id) {
+  isGameOver = true;
   stopTime();
   document.getElementsByClassName("pause-button")[0].style.display = "none";
+  document.getElementsByClassName("board")[0].style.cursor = "default";
+
+  //On Loss: Reveal Mines, On Win: Reveal Image and add Switch Display Button.
   if (cellsData[id].hasMine) {
     alert("BOOM!\nGame Over");
     document.querySelectorAll(".mine").forEach(cell => {
@@ -141,8 +147,9 @@ function constructBoard() {
 function placeMines(id) {
   let minesLeft = 20;
   while (minesLeft > 0) {
+    const selectedArr = setSelectedArr(id);
     const rand = Math.floor(Math.random() * 100);
-    if (rand !== id && !cellsData[rand].hasMine) {
+    if (rand !== id && !cellsData[rand].hasMine &&rand!==id+selectedArr[0]&&rand!==id+selectedArr[1]&&rand!==id+selectedArr[2]&&rand!==id+selectedArr[3]&&rand!==id+selectedArr[4]&&rand!==id+selectedArr[5]&&rand!==id+selectedArr[6]&&rand!==id+selectedArr[7]) {
       cellsData[rand].hasMine = true;
       document.getElementById(`cell-${rand}`).classList.add("mine");
       minesLeft--;
@@ -181,7 +188,7 @@ function clickTile(mouseEvent, id) {
   // if it's first clicked tile, place mines
   // check adjacent and place numbers
   const cell = document.getElementById(`cell-${id}`);
-  if (mouseEvent.button === 0 && !cellsData[id].hasFlag) {
+  if (mouseEvent.button === 0 && !cellsData[id].hasFlag && !isGameOver) {
     if (cellsData[id].hasMine) {
       gameOver(id);
       return;
@@ -193,7 +200,7 @@ function clickTile(mouseEvent, id) {
       placeMines(id);
     }
     checkAdjacent(id);
-  } else if (mouseEvent.button === 2) {
+  } else if (mouseEvent.button === 2 && !isGameOver) {
     shouldFlag(id);
   }
 }
@@ -241,8 +248,9 @@ function winChecker(id) {
   const revealedTileCount = cellsData.filter(cell => cell.isRevealed).length;
   const mineCount = cellsData.filter(cell => cell.hasMine).length;
 
-  if (revealedTileCount + mineCount === cellsData.length) 
+  if (revealedTileCount + mineCount === cellsData.length) {
     gameOver(id);
+  }
 }
 
 //returns Array based on Edge Conditions

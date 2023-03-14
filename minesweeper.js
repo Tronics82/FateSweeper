@@ -58,8 +58,8 @@ function restart() {
   const board = document.getElementsByClassName("board")[0];
   const gameHeader = document.getElementsByClassName("game-header")[0];
   gameHeader.style.display = "None";
-  document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   board.innerHTML = "";
+  document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   document.getElementById("titleScreen").style.display = "flex";
   document.getElementsByClassName("pause-button")[0].style.display = "initial";
   document.getElementsByClassName("display-button")[0].style.display = "none";
@@ -69,6 +69,7 @@ function restart() {
   isDisplayClear = false;
   timeElapsed = 0;
   stopTime();
+  flagCounter();
 }
 
 // Determines Win or Loss, Disable onClick, and Hide Pause Button.
@@ -155,6 +156,7 @@ function placeMines(id) {
       minesLeft--;
     }
   }
+  flagCounter();
   placeNumbers();
 }
 
@@ -234,6 +236,7 @@ function revealCell(id) {
   cellsData[id].isRevealed = true;
   cell.classList.remove("flagged");
   cellsData[id].hasFlag = false;
+  flagCounter();
 
   //if (cellsData[id].hasNumber) {
     document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)";
@@ -280,6 +283,25 @@ function shouldFlag(id) {
     } else {
       cellsData[id].hasFlag = true;
       cell.classList.add("flagged");
+    }
+    flagCounter();
+  }
+}
+
+// Displays the number of flags left. Display turns red when below zero.
+function flagCounter() {
+  let flagsLeft = document.getElementsByClassName("flags-left")[0];
+  const mineCount = cellsData.filter(cell => cell.hasMine).length;
+  const flagCount = cellsData.filter(cell => cell.hasFlag).length;
+  if (mineCount <= 0) {
+    flagsLeft.innerHTML = "Flags: ";
+    flagsLeft.style.color = "black";
+  } else {
+    flagsLeft.innerHTML = `Flags: ${mineCount - flagCount}`;
+    if (mineCount - flagCount < 0) {
+      flagsLeft.style.color = "red";
+    } else {
+      flagsLeft.style.color = "black";
     }
   }
 }

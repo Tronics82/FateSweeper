@@ -60,6 +60,10 @@ button:hover {
     height: 50px;
     flex: 0 0 50px;
     background-color: rgb(197, 197, 194);
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    
 
     font: 15px Arial, sans-serif;
     font-weight:bold;
@@ -98,6 +102,6 @@ button:hover {
     border: 1px solid black;
 }
 
-.game-timer {
+.game-timer, .flags-left {
     padding: 10px;
 }

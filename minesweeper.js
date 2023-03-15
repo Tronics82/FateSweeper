@@ -50,7 +50,24 @@ function musicPlayer() {}
 
 function generateBackground() {
   const backgroundImages = [
-    "url('./assets/background-images/fate_nero_and_tamamo.jpg')",
+    "url('./assets/background-images/image_1.png')",
+    "url('./assets/background-images/image_2.png')",
+    "url('./assets/background-images/image_3.png')",
+    "url('./assets/background-images/image_4.png')",
+    "url('./assets/background-images/image_5.png')",
+    "url('./assets/background-images/image_6.png')",
+    "url('./assets/background-images/image_7.png')",
+    "url('./assets/background-images/image_8.png')",
+    "url('./assets/background-images/image_9.jpg')",
+    "url('./assets/background-images/image_10.jpg')",
+    "url('./assets/background-images/image_11.jpg')",
+    "url('./assets/background-images/image_12.jpg')",
+    "url('./assets/background-images/image_13.jpg')",
+    "url('./assets/background-images/image_14.png')",
+    "url('./assets/background-images/image_15.jpg')",
+    "url('./assets/background-images/image_16.png')",
+    "url('./assets/background-images/gif_1.gif')",
+    "url('./assets/background-images/gif_2.gif')",
   ];
   const rand = Math.floor(Math.random() * backgroundImages.length);
   const board = document.getElementsByClassName("board")[0];

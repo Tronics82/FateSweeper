@@ -36,7 +36,7 @@ function startTime() {
   timerId = setInterval(() => {
     timeElapsed++;
     const timer = document.getElementsByClassName("game-timer")[0];
-    timer.innerHTML = `Timer: ${timeElapsed}`; 
+    timer.innerHTML = `Timer: ${timeElapsed}`;
   }, 1000);
 }
 
@@ -47,10 +47,15 @@ function stopTime() {
 
 // start/stop/mute music player
 function musicPlayer() {}
- 
-// throw image uris (string path) into an array, generate random number and grab the index of the image uri using the random number
-// i.e "../assets/...image"
-function generateBackground() {}
+
+function generateBackground() {
+  const backgroundImages = [
+    "url('./assets/background-images/fate_nero_and_tamamo.jpg')",
+  ];
+  const rand = Math.floor(Math.random() * backgroundImages.length);
+  const board = document.getElementsByClassName("board")[0];
+  board.style.backgroundImage = backgroundImages[rand];
+}
 
 // restart the game if game is over
 function restart() {
@@ -69,7 +74,6 @@ function restart() {
   isDisplayClear = false;
   timeElapsed = 0;
   stopTime();
-  flagCounter();
 }
 
 // Determines Win or Loss, Disable onClick, and Hide Pause Button.
@@ -82,48 +86,51 @@ function gameOver(id) {
   //On Loss: Reveal Mines, On Win: Reveal Image and add Switch Display Button.
   if (cellsData[id].hasMine) {
     alert("BOOM!\nGame Over");
-    document.querySelectorAll(".mine").forEach(cell => {
+    document.querySelectorAll(".mine").forEach((cell) => {
       cell.style.backgroundColor = "rgba(255,0,0,1)";
     });
   } else {
     alert("Congratulations!\nYou Won!");
-    document.querySelectorAll(".flagged").forEach(cell => {
+    document.querySelectorAll(".flagged").forEach((cell) => {
       cell.classList.remove("flagged");
     });
-    document.getElementsByClassName("display-button")[0].style.display = "initial";
+    document.getElementsByClassName("display-button")[0].style.display =
+      "initial";
     displaySwitch();
   }
 }
 
 function displaySwitch() {
   if (isDisplayClear) {
-    document.querySelectorAll(".cell").forEach(cell => {
+    document.querySelectorAll(".cell").forEach((cell) => {
       cell.style.backgroundColor = "rgba(197, 197, 194, 0.8)";
       cell.style.border = "1px solid whitesmoke";
       cell.style.color = "rgba(0,0,0,1)";
       cell.style.textShadow = "1px 1px 2px rgba(255,255,255,1)";
     });
-    document.querySelectorAll(".mine").forEach(cell => {
+    document.querySelectorAll(".mine").forEach((cell) => {
       cell.style.backgroundColor = "rgba(255,0,0,1)";
     });
     isDisplayClear = false;
   } else {
-    document.querySelectorAll(".cell").forEach(cell => {
+    document.querySelectorAll(".cell").forEach((cell) => {
       cell.style.backgroundColor = "rgba(0,0,0,0)";
       cell.style.border = "none";
       cell.style.color = "rgba(0,0,0,0)";
       cell.style.textShadow = "1px 1px 2px rgba(0,0,0,0)";
     });
     isDisplayClear = true;
-  } 
+  }
 }
 
 // creates the board
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
+  flagCounter();
   const game = document.getElementsByClassName("game-header")[0];
   game.style.display = "flex";
   const board = document.getElementsByClassName("board")[0];
+  generateBackground();
   for (let i = 0; i < 100; i++) {
     const grid = `
         <span
@@ -150,7 +157,11 @@ function placeMines(id) {
   while (minesLeft > 0) {
     const selectedArr = setSelectedArr(id);
     const rand = Math.floor(Math.random() * 100);
-    if (rand !== id && !cellsData[rand].hasMine &&rand!==id+selectedArr[0]&&rand!==id+selectedArr[1]&&rand!==id+selectedArr[2]&&rand!==id+selectedArr[3]&&rand!==id+selectedArr[4]&&rand!==id+selectedArr[5]&&rand!==id+selectedArr[6]&&rand!==id+selectedArr[7]) {
+    if (
+      rand !== id &&
+      !cellsData[rand].hasMine &&
+      selectedArr.every((index) => index + id !== rand)
+    ) {
       cellsData[rand].hasMine = true;
       document.getElementById(`cell-${rand}`).classList.add("mine");
       minesLeft--;
@@ -164,11 +175,11 @@ function placeMines(id) {
 function placeNumbers() {
   //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
   let x = 0;
-  
+
   for (let id = 0; id < 100; id++) {
     const selectedArr = setSelectedArr(id);
     x = 0;
-    if (!cellsData[id].hasMine) { 
+    if (!cellsData[id].hasMine) {
       for (let index of selectedArr) {
         if (cellsData[id + index].hasMine) {
           x++;
@@ -195,7 +206,7 @@ function clickTile(mouseEvent, id) {
       gameOver(id);
       return;
     }
-    console.log(`cell clicked ${id}`);   
+    console.log(`cell clicked ${id}`);
     if (isFirstClick) {
       isFirstClick = false;
       startTime();
@@ -208,7 +219,7 @@ function clickTile(mouseEvent, id) {
 }
 
 // reveals adjacent tiles and numbers depending on user click
-function checkAdjacent(id) { 
+function checkAdjacent(id) {
   if (cellsData[id].hasNumber) {
     revealCell(id);
     return;
@@ -219,37 +230,36 @@ function checkAdjacent(id) {
   }
 
   revealCell(id);
-  
+
   const selectedArr = setSelectedArr(id);
 
   for (let index of selectedArr) {
     //console.log(index);
-    checkAdjacent(id + index);  
+    checkAdjacent(id + index);
   }
 }
 
 // reveals cells and removes flags
 function revealCell(id) {
   const cell = document.getElementById(`cell-${id}`);
-  
+
   cell.classList.add("cell-clicked");
   cellsData[id].isRevealed = true;
   cell.classList.remove("flagged");
   cellsData[id].hasFlag = false;
   flagCounter();
 
-  //if (cellsData[id].hasNumber) {
-    document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)";
-    document.getElementsByClassName("cell")[id].style.textShadow = "1px 1px 2px rgba(255,255,255,1)";
-  //}
-  
+  document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)";
+  document.getElementsByClassName("cell")[id].style.textShadow =
+    "1px 1px 2px rgba(255,255,255,1)";
+
   winChecker(id);
 }
 
 //gameOvers when all non-mine cells are revealed
 function winChecker(id) {
-  const revealedTileCount = cellsData.filter(cell => cell.isRevealed).length;
-  const mineCount = cellsData.filter(cell => cell.hasMine).length;
+  const revealedTileCount = cellsData.filter((cell) => cell.isRevealed).length;
+  const mineCount = cellsData.filter((cell) => cell.hasMine).length;
 
   if (revealedTileCount + mineCount === cellsData.length) {
     gameOver(id);
@@ -262,15 +272,18 @@ function setSelectedArr(id) {
   const elementsToRemove = [];
   if (id >= 90) {
     elementsToRemove.push(9, 10, 11);
-  } if (id < 10) {
+  }
+  if (id < 10) {
     elementsToRemove.push(-9, -10, -11);
-  } if (id % 10 === 0) {
+  }
+  if (id % 10 === 0) {
     elementsToRemove.push(-1, 9, -11);
-  } if ((id + 1) % 10 === 0) {
+  }
+  if ((id + 1) % 10 === 0) {
     elementsToRemove.push(1, -9, 11);
   }
 
-  return selectedArr.filter(number => !elementsToRemove.includes(number));
+  return selectedArr.filter((number) => !elementsToRemove.includes(number));
 }
 
 // place a flag on a tile
@@ -291,8 +304,8 @@ function shouldFlag(id) {
 // Displays the number of flags left. Display turns red when below zero.
 function flagCounter() {
   let flagsLeft = document.getElementsByClassName("flags-left")[0];
-  const mineCount = cellsData.filter(cell => cell.hasMine).length;
-  const flagCount = cellsData.filter(cell => cell.hasFlag).length;
+  const mineCount = cellsData.filter((cell) => cell.hasMine).length;
+  const flagCount = cellsData.filter((cell) => cell.hasFlag).length;
   if (mineCount <= 0) {
     flagsLeft.innerHTML = "Flags: ";
     flagsLeft.style.color = "black";

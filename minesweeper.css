@@ -46,7 +46,6 @@ button:hover {
     background-size: 500px 500px;
     background-color: beige;
     cursor: pointer;
-    background-image: url("./assets/images/fate_nero_and_tamamo.jpg");
     background-position: center;
     object-fit: contain;
 }

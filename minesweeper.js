@@ -8,11 +8,13 @@ let timerId;
 
 // starts the game, calls create board and call time
 function start() {
-  constructBoard();
+  selectMode();
 }
 
 // chooses game difficulity
-function selectMode() {}
+function selectMode() {
+  constructBoard();
+}
 
 // pauses game
 function pause() {
@@ -27,8 +29,6 @@ function pause() {
     isGamePaused = false;
     startTime();
   }
-  // stop timer
-  // hide board and only show button
 }
 
 // starts timer
@@ -48,6 +48,7 @@ function stopTime() {
 // start/stop/mute music player
 function musicPlayer() {}
 
+// function to generate background image
 function generateBackground() {
   const backgroundImages = [
     "url('./assets/background-images/image_1.png')",
@@ -76,7 +77,7 @@ function generateBackground() {
 
 // restart the game if game is over
 function restart() {
-  // getElementsByClassName returns an array, we need 0th index
+  // should call select mode again
   const board = document.getElementsByClassName("board")[0];
   const gameHeader = document.getElementsByClassName("game-header")[0];
   gameHeader.style.display = "None";
@@ -144,6 +145,7 @@ function displaySwitch() {
 // creates the board
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
+  startTime();
   flagCounter();
   const game = document.getElementsByClassName("game-header")[0];
   game.style.display = "flex";
@@ -213,12 +215,6 @@ function placeNumbers() {
 
 // reveals the tile that the user clicked
 function clickTile(mouseEvent, id) {
-  // click a tile by adding onclick to the cell, capture click event and use the event to determine if mouse was right or left clicked
-  // replace or mark the cell as clicked
-  // then mark the cell programmatically as hasBeenClicked
-  // if it's first clicked tile, place mines
-  // check adjacent and place numbers
-  const cell = document.getElementById(`cell-${id}`);
   if (mouseEvent.button === 0 && !cellsData[id].hasFlag && !isGameOver) {
     if (cellsData[id].hasMine) {
       gameOver(id);
@@ -227,7 +223,6 @@ function clickTile(mouseEvent, id) {
     console.log(`cell clicked ${id}`);
     if (isFirstClick) {
       isFirstClick = false;
-      startTime();
       placeMines(id);
     }
     checkAdjacent(id);
@@ -267,9 +262,9 @@ function revealCell(id) {
   cellsData[id].hasFlag = false;
   flagCounter();
 
-  document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)";
+  document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)"; // black
   document.getElementsByClassName("cell")[id].style.textShadow =
-    "1px 1px 2px rgba(255,255,255,1)";
+    "1px 1px 2px rgba(255,255,255,1)"; // white
 
   winChecker(id);
 }

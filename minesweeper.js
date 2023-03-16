@@ -57,14 +57,14 @@ function generateBackground() {
     "url('./assets/background-images/image_5.png')",
     "url('./assets/background-images/image_6.png')",
     "url('./assets/background-images/image_7.png')",
-    "url('./assets/background-images/image_8.png')",
+    "url('./assets/background-images/image_8.jpg')",
     "url('./assets/background-images/image_9.jpg')",
     "url('./assets/background-images/image_10.jpg')",
     "url('./assets/background-images/image_11.jpg')",
     "url('./assets/background-images/image_12.jpg')",
     "url('./assets/background-images/image_13.jpg')",
     "url('./assets/background-images/image_14.png')",
-    "url('./assets/background-images/image_15.jpg')",
+    "url('./assets/background-images/image_15.png')",
     "url('./assets/background-images/image_16.png')",
     "url('./assets/background-images/gif_1.gif')",
     "url('./assets/background-images/gif_2.gif')",
@@ -81,6 +81,7 @@ function restart() {
   const gameHeader = document.getElementsByClassName("game-header")[0];
   gameHeader.style.display = "None";
   board.innerHTML = "";
+  board.style.cursor = "pointer";
   document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   document.getElementById("titleScreen").style.display = "flex";
   document.getElementsByClassName("pause-button")[0].style.display = "initial";

@@ -5,6 +5,33 @@ let isGameOver = false;
 let isDisplayClear = false;
 let timeElapsed = 0;
 let timerId;
+const gameConfig = {
+  easy: {
+    rows: 10,
+    cols: 10,
+    boardSizeStyle: "500px",
+    cellSizeStyle: "50px",
+    FontSizeStyle: "16px",
+    mineCount: 12,
+  },
+  /*normal: {
+    rows: 10,
+    cols: 10,
+    boardSizeStyle: "500px",
+    cellSizeStyle: "50px",
+    FontSizeStyle: "16px",
+    mineCount: 0.12,
+  },
+  hard: {
+    rows: 10,
+    cols: 10,
+    boardSizeStyle: "500px",
+    cellSizeStyle: "50px",
+    FontSizeStyle: "16px",
+    mineCount: 0.12,
+  }*/
+};
+let gameMode = "easy";
 
 // starts the game, calls create board and call time
 function start() {
@@ -148,10 +175,13 @@ function constructBoard() {
   startTime();
   flagCounter();
   const game = document.getElementsByClassName("game-header")[0];
+  game.style.width = gameConfig[gameMode].boardSizeStyle;
   game.style.display = "flex";
   const board = document.getElementsByClassName("board")[0];
   generateBackground();
-  for (let i = 0; i < 100; i++) {
+  const rows = gameConfig[gameMode].rows;
+  const cols = gameConfig[gameMode].cols;
+  for (let i = 0; i < rows * cols; i++) {
     const grid = `
         <span
           id="cell-${i}"
@@ -173,10 +203,12 @@ function constructBoard() {
 
 // place mines, happens after first reveal
 function placeMines(id) {
-  let minesLeft = 20;
+  const rows = gameConfig[gameMode].rows;
+  const cols = gameConfig[gameMode].cols;
+  let minesLeft = gameConfig[gameMode].mineCount;
   while (minesLeft > 0) {
     const selectedArr = setSelectedArr(id);
-    const rand = Math.floor(Math.random() * 100);
+    const rand = Math.floor(Math.random() * (rows * cols));
     if (
       rand !== id &&
       !cellsData[rand].hasMine &&
@@ -194,11 +226,12 @@ function placeMines(id) {
 // marks the cleared tiles with numbers if there is adjacent mines
 function placeNumbers() {
   //needs to check the 8 cells around itself. display num 0-8 based on num of mines.
-  let x = 0;
+  const rows = gameConfig[gameMode].rows;
+  const cols = gameConfig[gameMode].cols;
 
-  for (let id = 0; id < 100; id++) {
+  for (let id = 0; id < rows * cols; id++) {
     const selectedArr = setSelectedArr(id);
-    x = 0;
+    let x = 0;
     if (!cellsData[id].hasMine) {
       for (let index of selectedArr) {
         if (cellsData[id + index].hasMine) {
@@ -215,6 +248,7 @@ function placeNumbers() {
 
 // reveals the tile that the user clicked
 function clickTile(mouseEvent, id) {
+  // left click, and it doesn't have a flag, and game isn't over
   if (mouseEvent.button === 0 && !cellsData[id].hasFlag && !isGameOver) {
     if (cellsData[id].hasMine) {
       gameOver(id);
@@ -226,6 +260,7 @@ function clickTile(mouseEvent, id) {
       placeMines(id);
     }
     checkAdjacent(id);
+    // right click and game isn't over
   } else if (mouseEvent.button === 2 && !isGameOver) {
     shouldFlag(id);
   }
@@ -281,19 +316,22 @@ function winChecker(id) {
 
 //returns Array based on Edge Conditions
 function setSelectedArr(id) {
-  const selectedArr = [1, -9, 11, -10, 10, -1, 9, -11];
+  const row = gameConfig[gameMode].rows;
+  const col = gameConfig[gameMode].cols;
+  // const selectedArr = [1, -9, 11, -10, 10, -1, 9, -11];
+  const selectedArr = [1, -row + 1, row + 1, -row, row, -1, row - 1, -row - 1];
   const elementsToRemove = [];
-  if (id >= 90) {
-    elementsToRemove.push(9, 10, 11);
+  if (id >= row * col - row) {
+    elementsToRemove.push(row - 1, row, row + 1);
   }
-  if (id < 10) {
-    elementsToRemove.push(-9, -10, -11);
+  if (id < row) {
+    elementsToRemove.push(-row + 1, -row, -row - 1);
   }
-  if (id % 10 === 0) {
-    elementsToRemove.push(-1, 9, -11);
+  if (id % row === 0) {
+    elementsToRemove.push(-1, row - 1, -row - 1);
   }
-  if ((id + 1) % 10 === 0) {
-    elementsToRemove.push(1, -9, 11);
+  if ((id + 1) % row === 0) {
+    elementsToRemove.push(1, -row + 1, row + 1);
   }
 
   return selectedArr.filter((number) => !elementsToRemove.includes(number));

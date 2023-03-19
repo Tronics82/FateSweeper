@@ -9,27 +9,21 @@ const gameConfig = {
   easy: {
     rows: 10,
     cols: 10,
-    boardSizeStyle: "500px",
-    cellSizeStyle: "50px",
-    FontSizeStyle: "16px",
+    cellSizeStyle: 50,
     mineCount: 12,
   },
-  /*normal: {
-    rows: 10,
-    cols: 10,
-    boardSizeStyle: "500px",
-    cellSizeStyle: "50px",
-    FontSizeStyle: "16px",
-    mineCount: 0.12,
+  normal: {
+    rows: 16,
+    cols: 16,
+    cellSizeStyle: 35,
+    mineCount: 40,
   },
   hard: {
-    rows: 10,
-    cols: 10,
-    boardSizeStyle: "500px",
-    cellSizeStyle: "50px",
-    FontSizeStyle: "16px",
-    mineCount: 0.12,
-  }*/
+    rows: 30,
+    cols: 16,
+    cellSizeStyle: 35,
+    mineCount: 99,
+  }
 };
 let gameMode = "easy";
 
@@ -40,7 +34,20 @@ function start() {
 
 // chooses game difficulity
 function selectMode() {
+  boardSizeStyle();
   constructBoard();
+}
+
+function boardSizeStyle() {
+  const board = document.getElementsByClassName("board")[0];
+  const gameHeader = document.getElementsByClassName("game-header")[0];
+  const rows = gameConfig[gameMode].rows;
+  const cols = gameConfig[gameMode].cols;
+  const cellSize = gameConfig[gameMode].cellSizeStyle;
+
+  board.style.width = `${rows * cellSize}px`;
+  gameHeader.style.width = `${rows * cellSize}px`;
+  board.style.backgroundSize = `${rows * cellSize}px ${cols * cellSize}px`;
 }
 
 // pauses game
@@ -49,7 +56,7 @@ function pause() {
     isGamePaused = true;
     document.getElementsByClassName("pause-button")[0].innerHTML = "Resume";
     document.getElementsByClassName("board")[0].style.display = "None";
-    clearInterval(timerId);
+    stopTime();
   } else {
     document.getElementsByClassName("pause-button")[0].innerHTML = "Pause";
     document.getElementsByClassName("board")[0].style.display = "flex";
@@ -109,15 +116,20 @@ function restart() {
   const gameHeader = document.getElementsByClassName("game-header")[0];
   gameHeader.style.display = "None";
   board.innerHTML = "";
+  board.style.display = "flex";
   board.style.cursor = "pointer";
   document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   document.getElementById("titleScreen").style.display = "flex";
   document.getElementsByClassName("pause-button")[0].style.display = "initial";
+  document.getElementsByClassName("pause-button")[0].style.visibility = "hidden";
+  document.getElementsByClassName("pause-button")[0].innerHTML = "Pause";
+  document.getElementsByClassName("restart-button")[0].style.visibility = "hidden";
   document.getElementsByClassName("display-button")[0].style.display = "none";
   cellsData = [];
   isFirstClick = true;
   isGameOver = false;
   isDisplayClear = false;
+  isGamePaused = false;
   timeElapsed = 0;
   stopTime();
 }
@@ -140,15 +152,15 @@ function gameOver(id) {
     document.querySelectorAll(".flagged").forEach((cell) => {
       cell.classList.remove("flagged");
     });
-    document.getElementsByClassName("display-button")[0].style.display =
-      "initial";
+    document.getElementsByClassName("display-button")[0].style.display = "initial";
+    document.getElementsByClassName("flags-left")[0].innerHTML = "";
     displaySwitch();
   }
 }
 
 function displaySwitch() {
   if (isDisplayClear) {
-    document.querySelectorAll(".cell").forEach((cell) => {
+    document.querySelectorAll(`.cell-${gameMode}`).forEach((cell) => {
       cell.style.backgroundColor = "rgba(197, 197, 194, 0.8)";
       cell.style.border = "1px solid whitesmoke";
       cell.style.color = "rgba(0,0,0,1)";
@@ -159,7 +171,7 @@ function displaySwitch() {
     });
     isDisplayClear = false;
   } else {
-    document.querySelectorAll(".cell").forEach((cell) => {
+    document.querySelectorAll(`.cell-${gameMode}`).forEach((cell) => {
       cell.style.backgroundColor = "rgba(0,0,0,0)";
       cell.style.border = "none";
       cell.style.color = "rgba(0,0,0,0)";
@@ -172,11 +184,8 @@ function displaySwitch() {
 // creates the board
 function constructBoard() {
   document.getElementById("titleScreen").style.display = "none";
-  startTime();
+  document.getElementsByClassName("game-header")[0].style.display = "flex";
   flagCounter();
-  const game = document.getElementsByClassName("game-header")[0];
-  game.style.width = gameConfig[gameMode].boardSizeStyle;
-  game.style.display = "flex";
   const board = document.getElementsByClassName("board")[0];
   generateBackground();
   const rows = gameConfig[gameMode].rows;
@@ -185,7 +194,7 @@ function constructBoard() {
     const grid = `
         <span
           id="cell-${i}"
-          class="cell"
+          class="cell-${gameMode}"
           onclick="clickTile(event, ${i})"  
           oncontextmenu="event.preventDefault(); clickTile(event, ${i});">
         </span>
@@ -257,6 +266,9 @@ function clickTile(mouseEvent, id) {
     console.log(`cell clicked ${id}`);
     if (isFirstClick) {
       isFirstClick = false;
+      document.getElementsByClassName("pause-button")[0].style.visibility = "visible";
+      document.getElementsByClassName("restart-button")[0].style.visibility = "visible";
+      startTime();
       placeMines(id);
     }
     checkAdjacent(id);
@@ -297,8 +309,8 @@ function revealCell(id) {
   cellsData[id].hasFlag = false;
   flagCounter();
 
-  document.getElementsByClassName("cell")[id].style.color = "rgba(0,0,0,1)"; // black
-  document.getElementsByClassName("cell")[id].style.textShadow =
+  document.getElementsByClassName(`cell-${gameMode}`)[id].style.color = "rgba(0,0,0,1)"; // black
+  document.getElementsByClassName(`cell-${gameMode}`)[id].style.textShadow =
     "1px 1px 2px rgba(255,255,255,1)"; // white
 
   winChecker(id);

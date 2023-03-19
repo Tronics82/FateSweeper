@@ -50,7 +50,7 @@ button:hover {
     object-fit: contain;
 }
 
-.cell {
+.cell-easy {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,7 +71,49 @@ button:hover {
     object-fit: contain;
 }
 
-.cell:hover {
+.cell-normal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+    border: 1px solid whitesmoke;
+    height: 35px;
+    flex: 0 0 35px;
+    background-color: rgb(197, 197, 194);
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    
+
+    font: 15px Arial, sans-serif;
+    font-weight:bold;
+    color: rgba(0,0,0,0);
+    /* background-image: url();*/
+    object-fit: contain;
+}
+
+.cell-hard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+    border: 1px solid whitesmoke;
+    height: 35px;
+    flex: 0 0 35px;
+    background-color: rgb(197, 197, 194);
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    
+
+    font: 15px Arial, sans-serif;
+    font-weight:bold;
+    color: rgba(0,0,0,0);
+    /* background-image: url();*/
+    object-fit: contain;
+}
+
+.cell-easy:hover, .cell-normal:hover, .cell-hard:hover {
     /*background-color: #fff;*/
     border: 3px dashed black;
 }
@@ -97,10 +139,19 @@ button:hover {
     justify-content: center;
     padding: 10px;
     margin: 10px 10px 0 10px;
-    width: 500px;
     border: 1px solid black;
 }
 
-.game-timer, .flags-left {
+.pause-button, .restart-button {
+    visibility: hidden;
+}
+
+.game-timer {
+    justify-self: left;
+    padding: 10px;
+}
+
+.flags-left {
+    justify-self: right;
     padding: 10px;
 }

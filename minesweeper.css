@@ -72,7 +72,6 @@ label {
     font: 15px Arial, sans-serif;
     font-weight:bold;
     color: rgba(0,0,0,0);
-    /* background-image: url();*/
     object-fit: contain;
 }
 
@@ -93,7 +92,6 @@ label {
     font: 15px Arial, sans-serif;
     font-weight:bold;
     color: rgba(0,0,0,0);
-    /* background-image: url();*/
     object-fit: contain;
 }
 
@@ -114,12 +112,10 @@ label {
     font: 15px Arial, sans-serif;
     font-weight:bold;
     color: rgba(0,0,0,0);
-    /* background-image: url();*/
     object-fit: contain;
 }
 
 .cell-easy:hover, .cell-normal:hover, .cell-hard:hover {
-    /*background-color: #fff;*/
     border: 3px dashed black;
 }
 

@@ -27,18 +27,14 @@ const gameConfig = {
 };
 let gameMode = "easy";
 
-// starts the game, calls create board and call time
+// starts the game, calls create board based on game mode
 function start() {
-  selectMode();
-}
-
-// chooses game difficulity
-function selectMode() {
   gameMode = document.getElementById("difficulty").value;
   boardSizeStyle();
   constructBoard();
 }
 
+// sets board style values based on game mode
 function boardSizeStyle() {
   const board = document.getElementsByClassName("board")[0];
   const gameHeader = document.getElementsByClassName("game-header")[0];

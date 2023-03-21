@@ -34,6 +34,7 @@ function start() {
 
 // chooses game difficulity
 function selectMode() {
+  gameMode = document.getElementById("difficulty").value;
   boardSizeStyle();
   constructBoard();
 }
@@ -109,9 +110,20 @@ function generateBackground() {
   board.style.backgroundImage = backgroundImages[rand];
 }
 
-// restart the game if game is over
+//Returns to Main Menu
+function goHome() {
+  reset();
+  document.getElementById("titleScreen").style.display = "flex";
+}
+
+//Restarts game
 function restart() {
-  // should call select mode again
+  reset();
+  constructBoard();
+}
+
+// resets neccessary values
+function reset() {
   const board = document.getElementsByClassName("board")[0];
   const gameHeader = document.getElementsByClassName("game-header")[0];
   gameHeader.style.display = "None";
@@ -119,7 +131,6 @@ function restart() {
   board.style.display = "flex";
   board.style.cursor = "pointer";
   document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
-  document.getElementById("titleScreen").style.display = "flex";
   document.getElementsByClassName("pause-button")[0].style.display = "initial";
   document.getElementsByClassName("pause-button")[0].style.visibility = "hidden";
   document.getElementsByClassName("pause-button")[0].innerHTML = "Pause";

@@ -32,6 +32,7 @@
             <button class="display-button" onclick="displaySwitch()"> Switch Display </button>
             <button class="pause-button" onclick="pause()"> Pause </button>
             <button class="restart-button" onclick="restart()"> Restart </button>
+            <button class="home-button" onclick="goHome()">Go Home</button>
             <div class="flags-left"> Flags: </div>
         </div>
         <div id="titleScreen">
@@ -39,6 +40,15 @@
                 Welcome to Minesweeper
             </h1>
             <button onclick="start()">Start</button>
+            <br />
+            <form>
+                <label for="difficulty">Select Difficulty:</label>
+                <select id="difficulty" name="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="normal">Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </form>
         </div>
         <div class="board">
         </div>

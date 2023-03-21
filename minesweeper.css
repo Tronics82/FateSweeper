@@ -36,6 +36,11 @@ button:hover {
     display: none;
 }
 
+label {
+    font: 18px Times, serif;
+    font-weight: bold;
+}
+
 .board {
     display: flex;
     justify-content: center;

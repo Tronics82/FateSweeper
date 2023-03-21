@@ -5,6 +5,7 @@ let isGameOver = false;
 let isDisplayClear = false;
 let timeElapsed = 0;
 let timerId;
+
 const gameConfig = {
   easy: {
     rows: 10,
@@ -23,12 +24,13 @@ const gameConfig = {
     cols: 16,
     cellSizeStyle: 35,
     mineCount: 99,
-  }
+  },
 };
 let gameMode = "easy";
 
 // starts the game, calls create board based on game mode
 function start() {
+  musicPlayer();
   gameMode = document.getElementById("difficulty").value;
   boardSizeStyle();
   constructBoard();
@@ -77,7 +79,14 @@ function stopTime() {
 }
 
 // start/stop/mute music player
-function musicPlayer() {}
+function musicPlayer() {
+  let musicPlayer = document.getElementById("myAudio");
+  if (musicPlayer.paused) {
+    musicPlayer.play();
+  } else {
+    musicPlayer.pause();
+  }
+}
 
 // function to generate background image
 function generateBackground() {
@@ -137,7 +146,7 @@ function generateBackground() {
       "url('./assets/background-images/gif_02.gif')",
     ];
   }
-  
+
   const rand = Math.floor(Math.random() * backgroundImages.length);
   const board = document.getElementsByClassName("board")[0];
   board.style.backgroundImage = backgroundImages[rand];
@@ -165,9 +174,11 @@ function reset() {
   board.style.cursor = "pointer";
   document.getElementsByClassName("game-timer")[0].innerHTML = "Timer: 0";
   document.getElementsByClassName("pause-button")[0].style.display = "initial";
-  document.getElementsByClassName("pause-button")[0].style.visibility = "hidden";
+  document.getElementsByClassName("pause-button")[0].style.visibility =
+    "hidden";
   document.getElementsByClassName("pause-button")[0].innerHTML = "Pause";
-  document.getElementsByClassName("restart-button")[0].style.visibility = "hidden";
+  document.getElementsByClassName("restart-button")[0].style.visibility =
+    "hidden";
   document.getElementsByClassName("display-button")[0].style.display = "none";
   cellsData = [];
   isFirstClick = true;
@@ -196,8 +207,10 @@ function gameOver(id) {
     document.querySelectorAll(".flagged").forEach((cell) => {
       cell.classList.remove("flagged");
     });
-    document.getElementsByClassName("display-button")[0].style.display = "initial";
-    document.getElementsByClassName("flags-left")[0].innerHTML = "Congratulations!";
+    document.getElementsByClassName("display-button")[0].style.display =
+      "initial";
+    document.getElementsByClassName("flags-left")[0].innerHTML =
+      "Congratulations!";
     displaySwitch();
   }
 }
@@ -310,8 +323,10 @@ function clickTile(mouseEvent, id) {
     console.log(`cell clicked ${id}`);
     if (isFirstClick) {
       isFirstClick = false;
-      document.getElementsByClassName("pause-button")[0].style.visibility = "visible";
-      document.getElementsByClassName("restart-button")[0].style.visibility = "visible";
+      document.getElementsByClassName("pause-button")[0].style.visibility =
+        "visible";
+      document.getElementsByClassName("restart-button")[0].style.visibility =
+        "visible";
       startTime();
       placeMines(id);
     }
@@ -353,7 +368,8 @@ function revealCell(id) {
   cellsData[id].hasFlag = false;
   flagCounter();
 
-  document.getElementsByClassName(`cell-${gameMode}`)[id].style.color = "rgba(0,0,0,1)"; // black
+  document.getElementsByClassName(`cell-${gameMode}`)[id].style.color =
+    "rgba(0,0,0,1)"; // black
   document.getElementsByClassName(`cell-${gameMode}`)[id].style.textShadow =
     "1px 1px 2px rgba(255,255,255,1)"; // white
 

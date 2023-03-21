@@ -19,12 +19,19 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+    <audio id="myAudio" autoplay loop>
+        <source src="./assets/music/brave_shine.mp3" type="audio/mp3">
+        <source src="./assets/music/ash.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
     <link rel="stylesheet" href="./minesweeper.css">
     <script src="./minesweeper.js"></script>
 
 </head>
 
 <body>
+    <button class="sound-button" onclick="musicPlayer()">Mute/Unmute</button>
     <!-- your content here... -->
     <div class="game">
         <div class="game-header">

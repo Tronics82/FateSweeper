@@ -85,26 +85,63 @@ function musicPlayer() {}
 
 // function to generate background image
 function generateBackground() {
-  const backgroundImages = [
-    "url('./assets/background-images/image_1.png')",
-    "url('./assets/background-images/image_2.png')",
-    "url('./assets/background-images/image_3.png')",
-    "url('./assets/background-images/image_4.png')",
-    "url('./assets/background-images/image_5.png')",
-    "url('./assets/background-images/image_6.png')",
-    "url('./assets/background-images/image_7.png')",
-    "url('./assets/background-images/image_8.jpg')",
-    "url('./assets/background-images/image_9.jpg')",
-    "url('./assets/background-images/image_10.jpg')",
-    "url('./assets/background-images/image_11.jpg')",
-    "url('./assets/background-images/image_12.jpg')",
-    "url('./assets/background-images/image_13.jpg')",
-    "url('./assets/background-images/image_14.png')",
-    "url('./assets/background-images/image_15.png')",
-    "url('./assets/background-images/image_16.png')",
-    "url('./assets/background-images/gif_1.gif')",
-    "url('./assets/background-images/gif_2.gif')",
-  ];
+  let backgroundImages;
+  if (gameMode === "hard") {
+    backgroundImages = [
+      "url('./assets/hard-background-images/image_01.png')",
+      "url('./assets/hard-background-images/image_02.png')",
+      "url('./assets/hard-background-images/image_03.png')",
+      "url('./assets/hard-background-images/image_04.png')",
+      "url('./assets/hard-background-images/image_05.png')",
+      "url('./assets/hard-background-images/image_06.png')",
+      "url('./assets/hard-background-images/image_07.png')",
+      "url('./assets/hard-background-images/image_08.png')",
+      "url('./assets/hard-background-images/image_09.png')",
+      "url('./assets/hard-background-images/image_10.png')",
+      "url('./assets/hard-background-images/image_11.png')",
+      "url('./assets/hard-background-images/image_12.png')",
+      "url('./assets/hard-background-images/image_13.jpg')",
+      "url('./assets/hard-background-images/image_14.png')",
+      "url('./assets/hard-background-images/image_15.png')",
+      "url('./assets/hard-background-images/image_16.png')",
+      "url('./assets/hard-background-images/image_17.jpg')",
+      "url('./assets/hard-background-images/image_18.jpg')",
+    ];
+  } else {
+    backgroundImages = [
+      "url('./assets/background-images/image_01.png')",
+      "url('./assets/background-images/image_02.png')",
+      "url('./assets/background-images/image_03.png')",
+      "url('./assets/background-images/image_04.png')",
+      "url('./assets/background-images/image_05.png')",
+      "url('./assets/background-images/image_06.png')",
+      "url('./assets/background-images/image_07.png')",
+      "url('./assets/background-images/image_08.jpg')",
+      "url('./assets/background-images/image_09.jpg')",
+      "url('./assets/background-images/image_10.jpg')",
+      "url('./assets/background-images/image_11.jpg')",
+      "url('./assets/background-images/image_12.jpg')",
+      "url('./assets/background-images/image_13.jpg')",
+      "url('./assets/background-images/image_14.png')",
+      "url('./assets/background-images/image_15.png')",
+      "url('./assets/background-images/image_16.png')",
+      "url('./assets/background-images/image_17.png')",
+      "url('./assets/background-images/image_18.jpg')",
+      "url('./assets/background-images/image_19.png')",
+      "url('./assets/background-images/image_20.png')",
+      "url('./assets/background-images/image_21.png')",
+      "url('./assets/background-images/image_22.png')",
+      "url('./assets/background-images/image_23.png')",
+      "url('./assets/background-images/image_24.png')",
+      "url('./assets/background-images/image_25.png')",
+      "url('./assets/background-images/image_26.png')",
+      "url('./assets/background-images/image_27.png')",
+      "url('./assets/background-images/image_28.png')",
+      "url('./assets/background-images/gif_01.gif')",
+      "url('./assets/background-images/gif_02.gif')",
+    ];
+  }
+  
   const rand = Math.floor(Math.random() * backgroundImages.length);
   const board = document.getElementsByClassName("board")[0];
   board.style.backgroundImage = backgroundImages[rand];
@@ -164,7 +201,7 @@ function gameOver(id) {
       cell.classList.remove("flagged");
     });
     document.getElementsByClassName("display-button")[0].style.display = "initial";
-    document.getElementsByClassName("flags-left")[0].innerHTML = "";
+    document.getElementsByClassName("flags-left")[0].innerHTML = "Congratulations!";
     displaySwitch();
   }
 }

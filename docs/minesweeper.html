@@ -1,0 +1,69 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Fatesweeper</title>
+    <meta name="description" content="A simple HTML5 Template for new projects.">
+
+    <meta property="og:title" content="A Basic HTML5 Template">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.sitepoint.com/a-basic-html5-template/">
+    <meta property="og:description" content="A simple HTML5 Template for new projects.">
+    <meta property="og:image" content="image.png">
+
+    <link rel="icon" href="./icon_FATE.ico">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <audio id="myAudio" loop>
+        <source src="./assets/music/brave_shine.mp3" type="audio/mp3">
+        <source src="./assets/music/ash.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <link rel="stylesheet" href="./minesweeper.css">
+    <script src="./minesweeper.js"></script>
+
+</head>
+
+<body>
+    <!-- your content here... -->
+    <span class="sound-button">Music &nbsp;
+        <button onclick="musicPlayer()">&#9836;</button> <!-- music symbol -->
+    </span>
+    
+    <div class="game">
+        <div class="game-header">
+            <button class="winDebug" style="display:none;" onclick="win()">Win</button>
+            <div class="game-timer">Timer: 0</div>
+            <button class="display-button" onclick="displaySwitch()"> Switch Display </button>
+            <button class="pause-button" onclick="pause()"> Pause </button>
+            <button class="restart-button" onclick="restart()"> Restart </button>
+            <button class="home-button" onclick="goHome()">Go Home</button>
+            <div class="flags-left"> Flags: </div>
+        </div>
+        <div id="titleScreen">
+            <h1>
+                Welcome to Minesweeper
+            </h1>
+            <button onclick="start()">Start</button>
+            <br />
+            <form>
+                <label for="difficulty" class="difficulty">Select Difficulty:</label>
+                <select id="difficulty" name="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="normal">Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </form>
+        </div>
+        <div class="board">
+        </div>
+    </div>
+</body>
+
+</html>

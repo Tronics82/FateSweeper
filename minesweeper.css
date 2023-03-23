@@ -36,7 +36,12 @@ button:hover {
     display: none;
 }
 
-label {
+.sound-button {
+    display: flex;
+    justify-content: right;
+}
+
+.difficulty {
     font: 18px Times, serif;
     font-weight: bold;
 }
@@ -55,64 +60,36 @@ label {
     object-fit: contain;
 }
 
-.cell-easy {
+.cell {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0%;
     border: 1px solid whitesmoke;
-    height: 50px;
-    flex: 0 0 50px;
     background-color: rgb(197, 197, 194);
     user-select: none; /* Standard syntax */
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     
-
     font: 15px Arial, sans-serif;
     font-weight:bold;
     color: rgba(0,0,0,0);
     object-fit: contain;
+}
+
+.cell-easy {
+    height: 50px;
+    flex: 0 0 50px;
 }
 
 .cell-normal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0%;
-    border: 1px solid whitesmoke;
     height: 35px;
     flex: 0 0 35px;
-    background-color: rgb(197, 197, 194);
-    user-select: none; /* Standard syntax */
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    
-
-    font: 15px Arial, sans-serif;
-    font-weight:bold;
-    color: rgba(0,0,0,0);
-    object-fit: contain;
 }
 
 .cell-hard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0%;
-    border: 1px solid whitesmoke;
     height: 35px;
     flex: 0 0 35px;
-    background-color: rgb(197, 197, 194);
-    user-select: none; /* Standard syntax */
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    
-
-    font: 15px Arial, sans-serif;
-    font-weight:bold;
-    color: rgba(0,0,0,0);
-    object-fit: contain;
 }
 
 .cell-easy:hover, .cell-normal:hover, .cell-hard:hover {

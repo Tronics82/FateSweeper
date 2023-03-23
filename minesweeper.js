@@ -30,7 +30,6 @@ let gameMode = "easy";
 
 // starts the game, calls create board based on game mode
 function start() {
-  musicPlayer();
   gameMode = document.getElementById("difficulty").value;
   boardSizeStyle();
   constructBoard();
@@ -142,6 +141,9 @@ function generateBackground() {
       "url('./assets/background-images/image_26.png')",
       "url('./assets/background-images/image_27.png')",
       "url('./assets/background-images/image_28.png')",
+      "url('./assets/background-images/image_29.jpg')",
+      "url('./assets/background-images/image_30.jpg')",
+      "url('./assets/background-images/image_31.jpg')",
       "url('./assets/background-images/gif_01.gif')",
       "url('./assets/background-images/gif_02.gif')",
     ];
@@ -251,7 +253,7 @@ function constructBoard() {
     const grid = `
         <span
           id="cell-${i}"
-          class="cell-${gameMode}"
+          class="cell cell-${gameMode}"
           onclick="clickTile(event, ${i})"  
           oncontextmenu="event.preventDefault(); clickTile(event, ${i});">
         </span>
@@ -440,4 +442,9 @@ function flagCounter() {
       flagsLeft.style.color = "black";
     }
   }
+}
+
+function win() {
+  id = 50;
+  gameOver(id);
 }

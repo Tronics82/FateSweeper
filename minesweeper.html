@@ -19,7 +19,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-    <audio id="myAudio" autoplay loop>
+    <audio id="myAudio" loop>
         <source src="./assets/music/brave_shine.mp3" type="audio/mp3">
         <source src="./assets/music/ash.mp3" type="audio/mp3">
         Your browser does not support the audio element.
@@ -31,11 +31,15 @@
 </head>
 
 <body>
-    <button class="sound-button" onclick="musicPlayer()">Mute/Unmute</button>
     <!-- your content here... -->
+    <span class="sound-button">Music &nbsp;
+        <button onclick="musicPlayer()">&#9836;</button> <!-- music symbol -->
+    </span>
+    
     <div class="game">
         <div class="game-header">
-            <div class="game-timer"> Timer: 0 </div>
+            <button class="winDebug" onclick="win()">Win</button>
+            <div class="game-timer">Timer: 0</div>
             <button class="display-button" onclick="displaySwitch()"> Switch Display </button>
             <button class="pause-button" onclick="pause()"> Pause </button>
             <button class="restart-button" onclick="restart()"> Restart </button>
@@ -49,7 +53,7 @@
             <button onclick="start()">Start</button>
             <br />
             <form>
-                <label for="difficulty">Select Difficulty:</label>
+                <label for="difficulty" class="difficulty">Select Difficulty:</label>
                 <select id="difficulty" name="difficulty">
                     <option value="easy">Easy</option>
                     <option value="normal">Normal</option>

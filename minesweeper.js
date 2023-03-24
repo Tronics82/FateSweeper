@@ -217,6 +217,7 @@ function gameOver(id) {
   }
 }
 
+// switches from Image to Board Info
 function displaySwitch() {
   if (isDisplayClear) {
     document.querySelectorAll(`.cell-${gameMode}`).forEach((cell) => {

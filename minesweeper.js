@@ -5,24 +5,33 @@ let isGameOver = false;
 let isDisplayClear = false;
 let timeElapsed = 0;
 let timerId;
+var screenSize = window.matchMedia("(min-width: 500px)");
+boardSizeStyle(screenSize); // Call listener function at run time
+screenSize.addEventListener("change", boardSizeStyle); // Attach listener function on state changes
 
 const gameConfig = {
   easy: {
     rows: 10,
     cols: 10,
-    cellSizeStyle: 50,
+    cellSizeStyleSmall: 8,
+    cellSizeStyleLarge: 4,
+    minCellSizeStyle: 50,
     mineCount: 12,
   },
   normal: {
     rows: 16,
     cols: 16,
-    cellSizeStyle: 35,
+    cellSizeStyleSmall: 5.5,
+    cellSizeStyleLarge: 2.5,
+    minCellSizeStyle: 35,
     mineCount: 40,
   },
   hard: {
     rows: 30,
     cols: 16,
-    cellSizeStyle: 35,
+    cellSizeStyleSmall: 3,
+    cellSizeStyleLarge: 2.5,
+    minCellSizeStyle: 35,
     mineCount: 99,
   },
 };
@@ -33,19 +42,34 @@ function start() {
   gameMode = document.getElementById("difficulty").value;
   boardSizeStyle();
   constructBoard();
+  boardSizeStyle(screenSize);
 }
 
-// sets board style values based on game mode
-function boardSizeStyle() {
-  const board = document.getElementsByClassName("board")[0];
-  const gameHeader = document.getElementsByClassName("game-header")[0];
-  const rows = gameConfig[gameMode].rows;
-  const cols = gameConfig[gameMode].cols;
-  const cellSize = gameConfig[gameMode].cellSizeStyle;
-
-  board.style.width = `${rows * cellSize}px`;
-  gameHeader.style.width = `${rows * cellSize}px`;
-  board.style.backgroundSize = `${rows * cellSize}px ${cols * cellSize}px`;
+// sets board style values based on game mode, and adjusts for screen size
+function boardSizeStyle(screenSize) {
+  if (cellsData[0] !== undefined) {  
+    const board = document.getElementsByClassName("board")[0];
+    const gameHeader = document.getElementsByClassName("game-header")[0];
+    const rows = gameConfig[gameMode].rows;
+    //const cols = gameConfig[gameMode].cols;
+    const cellSizeSmall = gameConfig[gameMode].cellSizeStyleSmall;
+    const cellSizeLarge = gameConfig[gameMode].cellSizeStyleLarge;
+    const minCellSize = gameConfig[gameMode].minCellSizeStyle;
+    if (screenSize.matches) { // If media query matches
+      //document.body.style.backgroundColor = "yellow";
+      board.style.width = `${rows * cellSizeLarge}vw`
+      board.style.minWidth = `${rows * minCellSize}px`
+      gameHeader.style.width = `${rows * cellSizeLarge}vw`
+      gameHeader.style.minWidth = `${rows * minCellSize}px`
+    } else {
+      //document.body.style.backgroundColor = "pink";
+      board.style.width = `${rows * cellSizeSmall}vw`;
+      board.style.minWidth = `0px`;
+      gameHeader.style.width = `${rows * cellSizeSmall}vw`;
+      gameHeader.style.minWidth = `200px`;
+      //board.style.backgroundSize = `${rows * cellSize}vw ${cols * cellSize}vw`;
+    }
+  } 
 }
 
 // pauses game
@@ -319,11 +343,11 @@ function placeNumbers() {
 function clickTile(mouseEvent, id) {
   // left click, and it doesn't have a flag, and game isn't over
   if (mouseEvent.button === 0 && !cellsData[id].hasFlag && !isGameOver) {
+    console.log(`cell clicked ${id}`);
     if (cellsData[id].hasMine) {
       gameOver(id);
       return;
     }
-    console.log(`cell clicked ${id}`);
     if (isFirstClick) {
       isFirstClick = false;
       document.getElementsByClassName("pause-button")[0].style.visibility =
